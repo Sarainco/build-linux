@@ -1,0 +1,7 @@
+#!/bin/sh
+
+
+ums.sh start
+ums.sh bind
+echo /sbin/ums_hotplug.sh > /proc/sys/kernel/hotplug
+ums.sh update
