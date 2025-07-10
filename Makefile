@@ -38,6 +38,34 @@ busybox: busybox/compile
 busybox/clean:
 	rm -fr $(BUSYBOX_BUILD)
 
+V4L := v4l-utils-1.30.0
+V4L_SRC := $(SRC_DIR)/$(V4L)
+V4L_BUILD := $(BUILD_DIR)/$(V4L)
+V4L_CROSS_FILE := package/v4l/cross-rk3568.txt
+
+v4l/prepare:
+	mkdir -p $(V4L_BUILD)
+	cp $(V4L_CROSS_FILE) $(V4L_SRC)
+
+v4l/compile: v4l/prepare
+	cd $(V4L_SRC) && \
+	meson setup build --cross-file cross-rk3568.txt \
+		-Dv4l-utils=true \
+		-Dgconv=disabled \
+		-Dlibdvbv5=disabled \
+		-Dqv4l2=disabled \
+		-Dqvidcap=disabled \
+		-Dv4l2-compliance-32=false \
+		-Dv4l2-compliance-32-time64=false \
+		-Dv4l2-ctl-32=false \
+		-Dv4l2-ctl-32-time64=false \
+		-Dv4l2-compliance-libv4l=false && \
+	meson compile -C build
+
+v4l/install: v4l/compile
+	cd $(V4L_SRC) && \
+	meson install -C build --destdir $(V4L_BUILD)
+
 
 GIT_LOG_VERSION := $(shell git log -1 --format="%h")
 BUILD_TIME := $(shell date +"%y%m%d%H%M")
@@ -55,8 +83,10 @@ rootfs:
 	$(ROOTFS)/tmp \
 	$(ROOTFS)/run \
 	$(ROOTFS)/mnt \
-	$(ROOTFS)/userdata
+	$(ROOTFS)/userdata \
+	$(ROOTFS)/bin
 	cp -av files/* $(ROOTFS)/
+	cp -av $(V4L_BUILD)/* $(ROOTFS)/
 
 #@echo "Copying busybox shared libs..."
 #ldd $(ROOTFS_DIR)/bin/busybox | awk '{print $$3}' | xargs -I{} cp -uv {} $(ROOTFS_DIR)/lib/
@@ -79,6 +109,7 @@ clean-dist:
 prepare-src:
 	mkdir -p $(SRC_DIR)
 	tar xf $(DL_DIR)/$(BUSYBOX)* -C $(SRC_DIR) --overwrite
+	tar xf $(DL_DIR)/$(V4L)* -C $(SRC_DIR) --overwrite
 
 
 .PHONY: all busybox

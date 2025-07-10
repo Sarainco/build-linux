@@ -1,0 +1,10 @@
+[binaries]
+c = '/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-gcc'
+cpp = '/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++'
+ar = '/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-ar'
+
+[host_machine]
+system = 'linux'
+cpu_family = 'aarch64'
+cpu = 'aarch64'
+endian = 'little'
