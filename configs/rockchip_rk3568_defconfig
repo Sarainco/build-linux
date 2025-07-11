@@ -1,0 +1,17 @@
+#include "base.config"
+#include "base_extra.config"
+#include "camera.config"
+#include "debug.config"
+#include "weston.config"
+#include "gpu.config"
+#include "powermanager.config"
+#include "rk356x_arm64.config"
+BR2_KERNEL_MIRROR="https://mirror.bjtu.edu.cn/kernel/"
+BR2_GNU_MIRROR="http://mirrors.nju.edu.cn/gnu/"
+BR2_LUAROCKS_MIRROR="https://luarocks.cn"
+BR2_CPAN_MIRROR="http://mirrors.nju.edu.cn/CPAN/"
+BR2_TARGET_GENERIC_HOSTNAME="vs"
+BR2_TARGET_GENERIC_ISSUE="Welcome to vs"
+BR2_PACKAGE_RKNPU2=y
+BR2_PACKAGE_GDB=y
+BR2_PACKAGE_GDB_DEBUGGER=y
