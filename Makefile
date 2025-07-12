@@ -59,8 +59,4 @@ buildroot: env
 	cd $(SDK_SRC_DIR) && ./build.sh buildroot
 
 # ===== 清理 =====
-.PHONY: clean
-clean:
-	@echo "==> 清理编译输出..."
-	rm -rf $(SDK_BUILD_DIR)
 
