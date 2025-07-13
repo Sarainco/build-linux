@@ -112,4 +112,4 @@ prepare-src:
 	tar xf $(DL_DIR)/$(V4L)* -C $(SRC_DIR) --overwrite
 
 
-.PHONY: all busybox
+.PHONY: all busybox v4l image
