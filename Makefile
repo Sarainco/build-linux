@@ -9,7 +9,7 @@ ARCH := arm64
 CROSS_COMPILE := $(HOME)/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-
 
 IMAGE_FILE_ROOTFS := rootfs.ext4
-IMAGE_SIZE_ROOTFS := 128M
+IMAGE_SIZE_ROOTFS := 512M
 
 all: busybox;
 
@@ -37,6 +37,28 @@ busybox: busybox/compile
 
 busybox/clean:
 	rm -fr $(BUSYBOX_BUILD)
+
+
+OPEN_SSL := openssl-3.0.17
+OPEN_SSL_SRC := $(SRC_DIR)/$(OPEN_SSL)
+OPEN_SSL_BUILD := $(BUILD_DIR)/$(OPEN_SSL)
+
+open_ssl/prepare:
+	mkdir -p $(OPEN_SSL_BUILD)
+
+open_ssl/compile: open_ssl/prepare
+	cd $(OPEN_SSL_SRC) && \
+	./Configure linux-aarch64 \
+		--prefix=/usr \
+		--openssldir=/etc/ssl \
+		shared no-tests \
+		--cross-compile-prefix=$(CROSS_COMPILE) && \
+	make -j$(nproc)
+
+open_ssl/install:
+	cd $(OPEN_SSL_SRC) && \
+	make install DESTDIR=$(OPEN_SSL_BUILD)
+
 
 V4L := v4l-utils-1.30.0
 V4L_SRC := $(SRC_DIR)/$(V4L)
@@ -87,6 +109,7 @@ rootfs:
 	$(ROOTFS)/bin
 	cp -av files/* $(ROOTFS)/
 	cp -av $(V4L_BUILD)/* $(ROOTFS)/
+	cp -av $(OPEN_SSL_BUILD)/* $(ROOTFS)/
 
 #@echo "Copying busybox shared libs..."
 #ldd $(ROOTFS_DIR)/bin/busybox | awk '{print $$3}' | xargs -I{} cp -uv {} $(ROOTFS_DIR)/lib/
@@ -110,6 +133,7 @@ prepare-src:
 	mkdir -p $(SRC_DIR)
 	tar xf $(DL_DIR)/$(BUSYBOX)* -C $(SRC_DIR) --overwrite
 	tar xf $(DL_DIR)/$(V4L)* -C $(SRC_DIR) --overwrite
+	tar xf $(DL_DIR)/$(OPEN_SSL)* -C $(SRC_DIR) --overwrite
 
 
 .PHONY: all busybox v4l image
