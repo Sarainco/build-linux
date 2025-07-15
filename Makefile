@@ -107,7 +107,7 @@ rootfs:
 	$(ROOTFS)/mnt \
 	$(ROOTFS)/userdata \
 	$(ROOTFS)/bin
-	cp -av files/* $(ROOTFS)/
+	cp -av fs-overlay/* $(ROOTFS)/
 	cp -av $(V4L_BUILD)/* $(ROOTFS)/
 	cp -av $(OPEN_SSL_BUILD)/* $(ROOTFS)/
 
