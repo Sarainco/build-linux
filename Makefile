@@ -13,6 +13,25 @@ IMAGE_SIZE_ROOTFS := 512M
 
 all: busybox;
 
+KERNEL := linux-5.10.239.tar.xz
+KERNEL_SRC := $(SRC_DIR)/$(KERNEL)
+KERNEL_BUILD := $(BUILD_DIR)/$(KERNEL)
+KERNEL_ENV := ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) $(MAKE) -C $(KERNEL_SRC)
+
+kernel/prepare:
+	tar xf $(DL_DIR)/$(KERNEL)* -C $(SRC_DIR) --overwrite
+	mkdir -p $(KERNEL_BUILD)
+
+kernel/menuconfig:
+	$(KERNEL_ENV) defconfig
+	$(KERNEL_ENV) menuconfig
+
+kernel/compile:
+	$(KERNEL_ENV) all -j$(nproc)
+
+kernel/clean:
+	$(KERNEL_ENV) distclean
+
 BUSYBOX := busybox-1.36.0
 BUSYBOX_SRC := $(SRC_DIR)/$(BUSYBOX)
 BUSYBOX_BUILD := $(BUILD_DIR)/$(BUSYBOX)
