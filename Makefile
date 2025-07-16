@@ -13,14 +13,14 @@ IMAGE_SIZE_ROOTFS := 512M
 
 all: busybox;
 
-KERNEL := linux-5.10.239.tar.xz
+KERNEL := linux-5.10.239
 KERNEL_SRC := $(SRC_DIR)/$(KERNEL)
 KERNEL_BUILD := $(BUILD_DIR)/$(KERNEL)
 KERNEL_ENV := ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) $(MAKE) -C $(KERNEL_SRC)
 
 kernel/prepare:
+	mkdir -p $(SRC_DIR) && mkdir -p $(KERNEL_BUILD)
 	tar xf $(DL_DIR)/$(KERNEL)* -C $(SRC_DIR) --overwrite
-	mkdir -p $(KERNEL_BUILD)
 
 kernel/menuconfig:
 	$(KERNEL_ENV) defconfig
