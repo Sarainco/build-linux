@@ -26,6 +26,33 @@
 #include <asm/uaccess.h>
 #include <asm/io.h>
 
+#ifdef DEVICE_USE_OF
+/**设备树
+ * 1.系统总线
+ * 2.I2C控制器、SPI控制器等等
+ * 3.设备
+ * 4.描述设备树的文件叫DTS
+ * 5.DTS、DTB、DTC**/
+
+#include <linux/types.h>
+#include <linux/kernel.h>
+#include <linux/delay.h>
+#include <linux/ide.h>
+#include <linux/init.h>
+#include <linux/module.h>
+#include <linux/errno.h>
+#include <linux/gpio.h>
+#include <linux/cdev.h>
+#include <linux/device.h>
+#include <linux/of.h>
+#include <linux/of_address.h>
+#include <asm/mach/map.h>
+#include <asm/uaccess.h>
+#include <asm/io.h>
+
+#endif // DEVICE_USE_OF
+
+
 #define NEWCHRLED_CNT			1		  	/* 设备号个数 */
 #define NEWCHRLED_NAME			"newchrled"	/* 名字 */
 #define LEDOFF 					0			/* 关灯 */
@@ -73,6 +100,46 @@ static struct file_operations newchrled_fops = {
 
 static int __init led_init(void)
 {
+
+#ifdef DEVICE_USE_OF
+    u32 val = 0;
+    int ret;
+    u32 regdata[14];
+    const char *str;
+    struct property *proper;
+
+    /**获取设备树中的设备属性**/
+    //1.获取设备节点
+    dtsled.nd = of_find_node_by_path("/atkrk3568-led");
+    if(dtsled.nd == NULL) {
+
+    } else {
+
+    }
+    //2.获取compatible属性内容
+    proper = of_find_property(dtsled.nd, "compatible", NULL);
+    if(proper == NULL) {
+
+    } else {
+
+    }
+    //3.获取sataus属性内容
+    ret = of_proper_read_string(dtsled.nd, "status", &str);
+    if (ret < 0) {
+
+    } else {
+
+    }
+    //4.获取reg属性内容
+    ret = of_proper_read_u32_array(dtsled.nd, "reg", regdata, 10);
+    if(ret < 0) {
+
+    } else {
+
+    }
+
+#endif
+
     /*注册字符设备驱动*/
     //1.创建设备号
     if(newchrled.major) {
