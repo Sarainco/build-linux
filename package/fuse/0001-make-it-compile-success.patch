@@ -1,0 +1,57 @@
+From dc75a9ea2b45eb50f71b5585592e5bbfef9abacb Mon Sep 17 00:00:00 2001
+From: yuji <yujibuzailai_sun@outlook.com>
+Date: Thu, 31 Jul 2025 18:49:21 +0800
+Subject: [PATCH] make it compile success
+
+---
+ include/fuse_kernel.h  | 6 +++++-
+ util/ulockmgr_server.c | 4 ++--
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/include/fuse_kernel.h b/include/fuse_kernel.h
+index c632b58..9e02fe3 100644
+--- a/include/fuse_kernel.h
++++ b/include/fuse_kernel.h
+@@ -88,12 +88,16 @@
+ #ifndef _LINUX_FUSE_H
+ #define _LINUX_FUSE_H
+ 
+-#include <sys/types.h>
++#ifdef __linux__
++#include <linux/types.h>
++#else
++#include <stdint.h>
+ #define __u64 uint64_t
+ #define __s64 int64_t
+ #define __u32 uint32_t
+ #define __s32 int32_t
+ #define __u16 uint16_t
++#endif
+ 
+ /*
+  * Version negotiation:
+diff --git a/util/ulockmgr_server.c b/util/ulockmgr_server.c
+index 273c7d9..57f1cf9 100644
+--- a/util/ulockmgr_server.c
++++ b/util/ulockmgr_server.c
+@@ -124,7 +124,7 @@ static int receive_message(int sock, void *buf, size_t buflen, int *fdp,
+ 	return res;
+ }
+ 
+-static int closefrom(int minfd)
++void closefrom(int minfd)
+ {
+ 	DIR *dir = opendir("/proc/self/fd");
+ 	if (dir) {
+@@ -139,7 +139,7 @@ static int closefrom(int minfd)
+ 		}
+ 		closedir(dir);
+ 	}
+-	return 0;
++
+ }
+ 
+ static void send_reply(int cfd, struct message *msg)
+-- 
+2.34.1
+

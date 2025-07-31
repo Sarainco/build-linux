@@ -6,7 +6,8 @@ ROOTFS := $(TOPDIR)/staging/rootfs
 IMAGE := $(TOPDIR)/staging/image
 
 ARCH := arm64
-CROSS_COMPILE := $(HOME)/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-
+#CROSS_COMPILE := $(HOME)/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-
+CROSS_COMPILE := $(HOME)/toolchain/toolchain-rk3562/bin/aarch64-none-linux-gnu-
 
 IMAGE_FILE_ROOTFS := rootfs.ext4
 IMAGE_SIZE_ROOTFS := 512M
@@ -77,6 +78,80 @@ open_ssl/compile: open_ssl/prepare
 open_ssl/install:
 	cd $(OPEN_SSL_SRC) && \
 	make install DESTDIR=$(OPEN_SSL_BUILD)
+
+UTIL_LINUX := util-linux-2.35.2
+UTIL_LINUX_SRC := $(SRC_DIR)/$(UTIL_LINUX)
+UTIL_LINUX_BUILD := $(BUILD_DIR)/$(UTIL_LINUX)
+
+util_linux/prepare:
+	tar xf $(DL_DIR)/$(UTIL_LINUX)* -C $(SRC_DIR) --overwrite
+	mkdir -p $(UTIL_LINUX_BUILD)
+
+util_linux:
+	cd $(UTIL_LINUX_SRC) \
+	&& ./configure --prefix=/opt/util-linux \
+		--without-tinfo \
+		--host=aarch64-none-linux-gnu \
+		CC=$(CROSS_COMPILE)gcc \
+	&& make \
+	&& sudo make install DESTDIR=$(UTIL_LINUX_BUILD)
+
+
+NTFS3G := ntfs-3g_ntfsprogs-2022.10.3
+NTFS3G_SRC := $(SRC_DIR)/$(NTFS3G)
+NTFS3G_BUILD := $(BUILD_DIR)/$(NTFS3G)
+
+ntfs3g/prepare:
+	mkdir -p $(SRC_DIR)
+	tar xf $(DL_DIR)/$(NTFS3G)* -C $(SRC_DIR) --overwrite
+	mkdir -p $(NTFS3G_BUILD)
+
+ntfs3g: ntfs3g/prepare
+	cd $(NTFS3G_SRC) && \
+	./configure --prefix=/opt/ntfs-3g \
+		--disable-static     \
+		--with-fuse=internal \
+		--host=aarch64-none-linux-gnu \
+		CC=$(CROSS_COMPILE)gcc \
+	&& make \
+	&& sudo make install DESTDIR=$(NTFS3G_BUILD)
+
+FUSE := fuse-2.9.9
+FUSE_SRC := $(SRC_DIR)/$(FUSE)
+FUSE_BUILD := $(BUILD_DIR)/$(FUSE)
+
+fuse/prepare:
+	tar xf $(DL_DIR)/$(FUSE)* -C $(SRC_DIR) --overwrite
+	mkdir -p $(FUSE_BUILD)
+
+fuse:
+	cd $(FUSE_SRC) && \
+	./configure \
+		--host=aarch64-none-linux-gnu \
+		--prefix=/opt/fuse \
+		CC=$(CROSS_COMPILE)gcc \
+	&& make \
+	&& sudo make install DESTDIR=$(FUSE_BUILD)
+
+EXFAT := fuse-exfat-1.4.0
+EXFAT_SRC := $(SRC_DIR)/$(EXFAT)
+EXFAT_BUILD := $(BUILD_DIR)/$(EXFAT)
+
+exfat/prepare:
+	tar xf $(DL_DIR)/$(EXFAT)* -C $(SRC_DIR) --overwrite
+	mkdir -p $(EXFAT_BUILD)
+
+exfat:
+	cd $(EXFAT_SRC) && \
+	autoreconf --install && \
+	./configure \
+		--host=aarch64-none-linux-gnu \
+		--prefix=/opt/exfat \
+		CC=$(CROSS_COMPILE)gcc CXX=$(CROSS_COMPILE)g++ \
+		FUSE2_CFLAGS="-I/home/sunao/workspace/build-linux/staging/build/fuse-2.9.9/opt/fuse/include -L/home/sunao/workspace/build-linux/staging/build/fuse-2.9.9/opt/fuse/lib -lfuse -D_FILE_OFFSET_BITS=64" \
+		FUSE2_LIBS=/home/sunao/workspace/build-linux/staging/build/fuse-2.9.9/opt/fuse/lib/libfuse.a \
+	&& make \
+	&& sudo make install DESTDIR=$(EXFAT_BUILD)
 
 
 V4L := v4l-utils-1.30.0
