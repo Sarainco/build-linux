@@ -153,6 +153,20 @@ exfat:
 	&& make \
 	&& sudo make install DESTDIR=$(EXFAT_BUILD)
 
+E2FS := e2fsprogs-1.47.0
+E2FS_SRC := $(SRC_DIR)/$(E2FS)
+E2FS_BUILD := $(BUILD_DIR)/$(E2FS)
+
+e2fs/prepare:
+	tar xf $(DL_DIR)/$(E2FS)* -C $(SRC_DIR) --overwrite
+	mkdir -p $(E2FS_BUILD)
+
+e2fs:
+	cd $(E2FS_SRC) && \
+	./configure --host=aarch64-none-linux-gnu --prefix=/opt/e2fsprogs CC=$(CROSS_COMPILE)gcc LDFLAGS=-static \
+	&& make \
+	&& make install DESTDIR=$(E2FS_BUILD)
+
 
 V4L := v4l-utils-1.30.0
 V4L_SRC := $(SRC_DIR)/$(V4L)
