@@ -189,3 +189,78 @@ mddule_init(led_init);
 module_exit(led_exit);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("yuji");
+
+#ifdef GPIO_LED
+/**gpio和pinctl子系统**/
+/**pinctl子系统的主要工作内容如下
+ * 1.获取设备树中pin信息
+ * 2.设置pin的复用功能
+ * 3.设置pin的电气特性，如驱动能力
+ * **/
+
+#include <linux/types.h>
+#include <linux/kernel.h>
+#include <linux/delay.h>
+#include <linux/ide.h>
+#include <linux/init.h>
+#include <linux/module.h>
+#include <linux/errno.h>
+#include <linux/gpio.h>
+#include <linux/cdev.h>
+#include <linux/device.h>
+#include <linux/of.h>
+#include <linux/of_address.h>
+#include <linux/of_gpio.h>
+#include <asm/mach/map.h>
+#include <asm/uaccess.h>
+#include <asm/io.h>
+
+/* gpioled设备结构体 */
+struct gpioled_dev{
+	dev_t devid;			/* 设备号 	 */
+	struct cdev cdev;		/* cdev 	*/
+	struct class *class;	/* 类 		*/
+	struct device *device;	/* 设备 	 */
+	int major;				/* 主设备号	  */
+	int minor;				/* 次设备号   */
+	struct device_node	*nd; /* 设备节点 */
+	int led_gpio;			/* led所使用的GPIO编号		*/
+};
+
+struct gpioled_dev gpioled;	/* led设备 */
+
+static struct file_operations gpioled_fops = {
+
+};
+
+static int __init led_init(void)
+{
+    int ret = 0;
+
+    gpioled.nd = of_find_node_by_path("/gpioled");
+    if(gpioled.nd == NULL) {
+
+    }
+
+    gpioled.led_gpio = of_get_named_gpio(gpioled.nd, "led-gpio", 0);
+    if(gpioled.led_gpio < 0) {
+
+    }
+
+    ret = gpio_direction_output(gpioled.led_gpio, 1);
+    if(ret < 0) {
+
+    }
+
+    return 0;
+}
+
+static void __exit led_exit(void)
+{
+
+}
+
+module_init(led_init);
+module_exit(led_exit);
+
+#endif // GPIO_LED

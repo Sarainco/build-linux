@@ -1,13 +1,14 @@
 TOPDIR := $(CURDIR)
 SRC_DIR := $(TOPDIR)/staging/source
 BUILD_DIR := $(TOPDIR)/staging/build
+HOST_OUTPUT := $(TOPDIR)/staging/host
 DL_DIR := $(TOPDIR)/../rk3568_dl
 ROOTFS := $(TOPDIR)/staging/rootfs
 IMAGE := $(TOPDIR)/staging/image
 
 ARCH := arm64
-#CROSS_COMPILE := $(HOME)/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-
-CROSS_COMPILE := $(HOME)/toolchain/toolchain-rk3562/bin/aarch64-none-linux-gnu-
+CROSS_COMPILE := $(HOME)/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-
+#CROSS_COMPILE := $(HOME)/toolchain/toolchain-rk3562/bin/aarch64-none-linux-gnu-
 
 IMAGE_FILE_ROOTFS := rootfs.ext4
 IMAGE_SIZE_ROOTFS := 512M
@@ -195,6 +196,78 @@ v4l/compile: v4l/prepare
 v4l/install: v4l/compile
 	cd $(V4L_SRC) && \
 	meson install -C build --destdir $(V4L_BUILD)
+
+
+# sudo apt install git make gcc build-essential libncurses-dev bison flex libssl-dev lz4 u-boot-tools libtool \
+# libsysfs-dev texinfo meson cmake pkg-config gperf ninja-build mesa-common-dev libgl1-mesa-dev libglu1-mesa-dev
+
+QT6 := qt-everywhere-src-6.4.3
+QT6_HOST_BUILD := $(HOST_OUTPUT)/$(QT6)-build
+QT6_HOST_INSTALL := $(HOST_OUTPUT)/$(QT6)-install
+QT6_SRC := $(SRC_DIR)/$(QT6)
+QT6_BUILD := $(BUILD_DIR)/$(QT6)-build
+QT6_INSTALL := $(BUILD_DIR)/$(QT6)-install
+TOOLCHAIN_DIR := /home/sunao/toolchain/toolchain-rk3568
+CMAKE_DIR := /home/sunao/workspace/build-linux/package/qt6
+
+qt6/prepare:
+# 	tar xf $(DL_DIR)/$(QT6)* -C $(SRC_DIR) --overwrite
+# 	mkdir -p $(QT6_HOST_BUILD) && mkdir -p $(QT6_HOST_INSTALL)
+	mkdir -p $(QT6_BUILD) && mkdir -p $(QT6_INSTALL)
+
+qt6/host:
+	cd $(QT6_HOST_BUILD) && \
+	$(QT6_SRC)/configure -prefix $(QT6_HOST_INSTALL) && \
+	cmake --build .	&& \
+	cmake --install . \
+
+qt6/clean-host:
+	rm -rf $(QT6_HOST_BUILD) $(QT6_HOST_INSTALL)
+
+qt6/configure:
+	[ -f $(QT6_BUILD)/.configured ] || { rm -fr $(QT6_BUILD)/* ; \
+		sed -e s#%CROSS_COMPILE%#$(CROSS_COMPILE)# \
+			-e s#%TOOLCHAIN_DIR%#$(TOOLCHAIN_DIR)# \
+			$(CMAKE_DIR)/toolchain-rk3568.cmake  > $(QT6_BUILD)/toolchain.cmake ; \
+	}
+	[ -f $(QT6_BUILD)/.configured ] || { cd $(QT6_BUILD) && $(QT6_SRC)/configure \
+		-verbose \
+		-prefix /opt/qt6 \
+		-extprefix $(QT6_INSTALL) \
+		-no-pkg-config \
+		-opensource \
+		-confirm-license \
+		-release \
+		-shared \
+		-nomake examples \
+		-nomake tests \
+		-no-dbus \
+		-no-xcb \
+		-skip qtwebengine \
+		-skip qtwayland \
+		-no-openssl \
+		-no-cups \
+		-no-sql-mysql -no-sql-psql -plugin-sql-sqlite \
+		-gui \
+		-opengl es2 \
+		-egl \
+		-eglfs \
+		-gbm \
+		-kms \
+		--enable-linuxfb \
+		-no-directfb \
+		-- \
+		-DQT_HOST_PATH=$(QT6_HOST_INSTALL) \
+		-DCMAKE_TOOLCHAIN_FILE=$(QT6_BUILD)/toolchain.cmake \
+	&& touch $(QT6_BUILD)/.configured ; }
+
+qt6/compile: qt6/configure
+	cd $(QT6_BUILD) && cmake --build . --parallel
+	cd $(QT6_BUILD) && cmake --install . --strip
+
+
+qt6/clean:
+	rm -fr $(QT6_BUILD) $(QT6_INSTALL)
 
 
 GIT_LOG_VERSION := $(shell git log -1 --format="%h")
