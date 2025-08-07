@@ -1,0 +1,38 @@
+From 10813cf96c264946a0d5273bd7da50d877681627 Mon Sep 17 00:00:00 2001
+From: Sarainco <sarainco.sun@blztech.com>
+Date: Mon, 21 Jul 2025 10:08:45 +0800
+Subject: [PATCH] update opencv mk
+
+---
+ package/opencv4/opencv4.mk | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/package/opencv4/opencv4.mk b/package/opencv4/opencv4.mk
+index f4140fa4..10d3c511 100644
+--- a/package/opencv4/opencv4.mk
++++ b/package/opencv4/opencv4.mk
+@@ -29,6 +29,8 @@ ifeq ($(BR2_TOOLCHAIN_HAS_GCC_BUG_68485),y)
+ OPENCV4_CXXFLAGS += -O0
+ endif
+ 
++OPENCV4_CXXFLAGS += -O3 -ffast-math
++
+ # OpenCV component options
+ OPENCV4_CONF_OPTS += \
+ 	-DCMAKE_CXX_FLAGS="$(OPENCV4_CXXFLAGS)" \
+@@ -122,9 +124,11 @@ OPENCV4_CONF_OPTS += \
+ #   also to enable additional NEON code.
+ OPENCV4_CONF_OPTS += \
+ 	-DENABLE_POWERPC=OFF \
+-	-DENABLE_NEON=$(if $(BR2_ARM_CPU_HAS_NEON),ON,OFF) \
+ 	-DENABLE_VFPV3=OFF
+ 
++OPENCV4_CONF_OPTS += \
++	-DENABLE_NEON=ON \
++
+ # Cuda stuff
+ OPENCV4_CONF_OPTS += \
+ 	-DBUILD_CUDA_STUBS=OFF \
+-- 
+2.25.1
+

@@ -1,0 +1,82 @@
+From 8e993706e57fe0abdbc298cd76e7b15d135ddc1e Mon Sep 17 00:00:00 2001
+From: yuji <yujibuzailai_sun@outlook.com>
+Date: Sat, 21 Jun 2025 11:37:07 +0800
+Subject: [PATCH] sc132gs sensor is ok
+
+---
+ arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts | 10 +++++-----
+ arch/arm64/boot/dts/rockchip/rk3568.dtsi               |  2 +-
+ drivers/media/i2c/sc132gs.c                            |  4 +++-
+ 3 files changed, 9 insertions(+), 7 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
+index a6b1f6aa2..afd908b6b 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
+@@ -486,10 +486,10 @@
+ };
+ 
+ &i2c4 {
+-	status = "disabled";
++	status = "okay";
+ 
+ 	imx335: imx335@1a {
+-		status = "okay";
++		status = "disabled";
+ 		compatible = "sony,imx335";
+ 		reg = <0x1a>;
+ 		clocks = <&cru CLK_CIF_OUT>;
+@@ -513,7 +513,7 @@
+ 
+ 	ov13850: ov13850@10 {
+ 		compatible = "ovti,ov13850";
+-		status = "okay";
++		status = "disabled";
+ 		reg = <0x10>;
+ 		clocks = <&cru CLK_CIF_OUT>;
+ 		clock-names = "xvclk";
+@@ -546,8 +546,8 @@
+ 		power-domains = <&power RK3568_PD_VI>;
+ 		pinctrl-names = "rockchip,camera_default";
+ 		pinctrl-0 = <&cif_clk>;
+-		// reset-gpios = <&gpio4 RK_PB4 GPIO_ACTIVE_LOW>;
+-	    //pwdn-gpios = <&gpio4 RK_PB5 GPIO_ACTIVE_HIGH>;
++		//reset-gpios = <&gpio4 RK_PB4 GPIO_ACTIVE_LOW>;
++		poweroff-gpios = <&gpio2 RK_PA5 GPIO_ACTIVE_HIGH>;
+ 		rockchip,camera-module-index = <0>;
+ 		rockchip,camera-module-facing = "back";
+ 		rockchip,camera-module-name = "CMK-OT1522-FG3";
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568.dtsi b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
+index 837aea7ce..9c0dd70c0 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
+@@ -2943,7 +2943,7 @@
+ 		clock-names = "i2c", "pclk";
+ 		interrupts = <GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
+ 		pinctrl-names = "default";
+-		pinctrl-0 = <&i2c4m0_xfer>;
++		pinctrl-0 = <&i2c4m1_xfer>;
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		status = "disabled";
+diff --git a/drivers/media/i2c/sc132gs.c b/drivers/media/i2c/sc132gs.c
+index bd8f6c164..9e7216cdd 100644
+--- a/drivers/media/i2c/sc132gs.c
++++ b/drivers/media/i2c/sc132gs.c
+@@ -853,10 +853,12 @@ static int sc132gs_probe(struct i2c_client *client, const struct i2c_device_id *
+ 	if (IS_ERR(sc132gs->reset_gpio))
+ 		dev_warn(dev, "warn: Failed to get reset-gpios\n");
+ 
+-	sc132gs->poweroff_gpio = devm_gpiod_get(dev, "poweroff", GPIOD_OUT_LOW);
++	sc132gs->poweroff_gpio = devm_gpiod_get(dev, "poweroff", GPIOD_OUT_HIGH);
+ 	if (IS_ERR(sc132gs->poweroff_gpio))
+ 		dev_warn(dev, "warn: Failed to get poweroff-gpios\n");
+ 
++	usleep_range(500*1000, 600*1000);
++
+ 	ret = sc132gs_check_sensor_id(client);
+ 	if (ret)
+ 		goto free_dev;
+-- 
+2.25.1
+

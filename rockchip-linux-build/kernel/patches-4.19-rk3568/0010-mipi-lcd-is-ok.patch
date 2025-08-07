@@ -1,0 +1,250 @@
+From 0bf0b3adc04489ff6af6f941cabab12360929f23 Mon Sep 17 00:00:00 2001
+From: yuji <yujibuzailai_sun@outlook.com>
+Date: Fri, 20 Jun 2025 08:37:30 +0800
+Subject: [PATCH 1/2] add enable pin for panel
+
+---
+ .../dts/rockchip/rk3568-atk-atompi-ca1.dts    | 66 ++++++++++++++++---
+ .../dts/rockchip/rk3568-atk-atompi-ca1.dtsi   |  2 +-
+ drivers/gpu/drm/panel/panel-simple.c          | 14 ++++
+ 3 files changed, 72 insertions(+), 10 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
+index 60fa9b68e..a7af17108 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
+@@ -111,7 +111,8 @@
+ 	backlight: backlight {
+ 		compatible = "pwm-backlight";
+ 		status = "disabled";
+-		pwms = <&pwm5 0 25000 0>;
++		//pwms = <&pwm5 0 25000 0>;
++		pwms = <&pwm14 0 25000 0>;
+ 		brightness-levels = <
+ 			  0  20  20  21  21  22  22  23
+ 			 23  24  24  25  25  26  26  27
+@@ -195,6 +196,47 @@
+ 		//amp-supply = <&beeper_amp>;
+ 	};
+ 
++	irled: irled {
++		compatible = "pwm-backlight";
++		status = "okay";
++		pwms = <&pwm9 0 25000 0>;
++		brightness-levels = <
++			  0  20  20  21  21  22  22  23
++			 23  24  24  25  25  26  26  27
++			 27  28  28  29  29  30  30  31
++			 31  32  32  33  33  34  34  35
++			 35  36  36  37  37  38  38  39
++			 40  41  42  43  44  45  46  47
++			 48  49  50  51  52  53  54  55
++			 56  57  58  59  60  61  62  63
++			 64  65  66  67  68  69  70  71
++			 72  73  74  75  76  77  78  79
++			 80  81  82  83  84  85  86  87
++			 88  89  90  91  92  93  94  95
++			 96  97  98  99 100 101 102 103
++			104 105 106 107 108 109 110 111
++			112 113 114 115 116 117 118 119
++			120 121 122 123 124 125 126 127
++			128 129 130 131 132 133 134 135
++			136 137 138 139 140 141 142 143
++			144 145 146 147 148 149 150 151
++			152 153 154 155 156 157 158 159
++			160 161 162 163 164 165 166 167
++			168 169 170 171 172 173 174 175
++			176 177 178 179 180 181 182 183
++			184 185 186 187 188 189 190 191
++			192 193 194 195 196 197 198 199
++			200 201 202 203 204 205 206 207
++			208 209 210 211 212 213 214 215
++			216 217 218 219 220 221 222 223
++			224 225 226 227 228 229 230 231
++			232 233 234 235 236 237 238 239
++			240 241 242 243 244 245 246 247
++			248 249 250 251 252 253 254 255
++		>;
++		default-brightness-level = <200>;
++	};
++
+ 	i2c-gpio0 {
+ 		compatible = "i2c-gpio";
+ 		sda-gpios = <&gpio4 RK_PA1 GPIO_ACTIVE_HIGH>;
+@@ -254,6 +296,10 @@
+ 	status = "okay";
+ };
+ 
++&pwm9 {
++	status = "okay";
++};
++
+ &soc_thermal {
+ 	trips {
+ 		fan_ctrl_threshold: trip-point-2 {
+@@ -271,17 +317,19 @@
+ };
+ 
+ &dsi0 {
+-	status = "disabled";
++	status = "okay";
+ 
+ 	dsi0_panel: panel@0 { //默认是720P屏幕
+-		status = "disabled";
++		status = "okay";
+ 		compatible = "simple-panel-dsi";
+ 		reg = <0>;
+ 		backlight = <&backlight>;
+ 		power-supply = <&vcc5v0_sys>;
+-		// reset-gpios = <&gpio2 RK_PC1 GPIO_ACTIVE_LOW>;
+-		// pinctrl-names = "default";
+-		// pinctrl-0 = <&mipi_dsi_rst>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&mipi_dsi_rst>;
++		enable-gpios = <&gpio4 RK_PB1 GPIO_ACTIVE_HIGH>;
++		pwr-gpios = <&gpio4 RK_PB3 GPIO_ACTIVE_HIGH>;
++		reset-gpios = <&gpio4 RK_PC1 GPIO_ACTIVE_LOW>;
+         prepare-delay-ms = <1>;     // 复位拉高后等待1ms
+         reset-delay-ms = <10>;      // 复位拉低持续10ms
+         init-delay-ms = <120>;      // 复位释放后等待120ms
+@@ -438,7 +486,7 @@
+ };
+ 
+ &i2c4 {
+-	status = "okay";
++	status = "disabled";
+ 
+ 	imx335: imx335@1a {
+ 		status = "okay";
+@@ -553,7 +601,7 @@
+ 	dsi {
+ 		mipi_dsi_rst: mipi-dsi-rst {
+ 			rockchip,pins =
+-				<2 RK_PC1 RK_FUNC_GPIO &pcfg_pull_none>;
++				<4 RK_PC1 RK_FUNC_GPIO &pcfg_pull_none>;
+ 		};
+ 	};
+ 
+@@ -618,7 +666,7 @@
+ };
+ 
+ &rgb {
+-	status = "okay";
++	status = "disabled";
+ 
+ 	ports {
+ 		#address-cells = <1>;
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dtsi b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dtsi
+index 633ec3718..eb7e395da 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dtsi
+@@ -910,7 +910,7 @@
+ 	status = "okay";
+ };
+ 
+-&pwm5 {
++&pwm14 {
+ 	status = "okay";
+ };
+ 
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index f41d4e091..30459d91d 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -120,6 +120,7 @@ struct panel_simple {
+ 	struct i2c_adapter *ddc;
+ 
+ 	struct gpio_desc *enable_gpio;
++	struct gpio_desc *pwr_gpio;
+ 	struct gpio_desc *reset_gpio;
+ 	int cmd_type;
+ 
+@@ -554,6 +555,8 @@ static int panel_simple_unprepare(struct drm_panel *panel)
+ 
+ 	gpiod_direction_output(p->enable_gpio, 0);
+ 
++	gpiod_direction_output(p->pwr_gpio, 0);
++
+ 	panel_simple_regulator_disable(p);
+ 
+ 	if (p->desc->delay.unprepare)
+@@ -579,6 +582,7 @@ static int panel_simple_prepare(struct drm_panel *panel)
+ 	}
+ 
+ 	gpiod_direction_output(p->enable_gpio, 1);
++	gpiod_direction_output(p->pwr_gpio, 1);
+ 
+ 	if (p->desc->delay.prepare)
+ 		panel_simple_sleep(p->desc->delay.prepare);
+@@ -718,6 +722,15 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
+ 		return err;
+ 	}
+ 
++	panel->pwr_gpio = devm_gpiod_get_optional(dev, "pwr",
++						     GPIOD_ASIS);
++	if (IS_ERR(panel->pwr_gpio)) {
++		err = PTR_ERR(panel->pwr_gpio);
++		if (err != -EPROBE_DEFER)
++			dev_err(dev, "failed to get pwr GPIO: %d\n", err);
++		return err;
++	}
++
+ 	panel->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_ASIS);
+ 	if (IS_ERR(panel->reset_gpio)) {
+ 		err = PTR_ERR(panel->reset_gpio);
+@@ -849,6 +862,7 @@ static void panel_simple_shutdown(struct device *dev)
+ 	if (panel->prepared) {
+ 		gpiod_direction_output(panel->reset_gpio, 1);
+ 		gpiod_direction_output(panel->enable_gpio, 0);
++		gpiod_direction_output(panel->pwr_gpio, 0);
+ 		panel_simple_regulator_disable(panel);
+ 	}
+ }
+-- 
+2.25.1
+
+
+From a1d9f184a82181d2213887e9be7c784269e827b5 Mon Sep 17 00:00:00 2001
+From: yuji <yujibuzailai_sun@outlook.com>
+Date: Fri, 20 Jun 2025 16:37:02 +0800
+Subject: [PATCH 2/2] mipi lcd is ok
+
+---
+ .../boot/dts/rockchip/rk3568-atk-atompi-ca1.dts    | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
+index a7af17108..a6b1f6aa2 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
+@@ -327,11 +327,11 @@
+ 		power-supply = <&vcc5v0_sys>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&mipi_dsi_rst>;
+-		enable-gpios = <&gpio4 RK_PB1 GPIO_ACTIVE_HIGH>;
+-		pwr-gpios = <&gpio4 RK_PB3 GPIO_ACTIVE_HIGH>;
+-		reset-gpios = <&gpio4 RK_PC1 GPIO_ACTIVE_LOW>;
+-        prepare-delay-ms = <1>;     // 复位拉高后等待1ms
+-        reset-delay-ms = <10>;      // 复位拉低持续10ms
++		enable-gpios = <&gpio4 RK_PB3 GPIO_ACTIVE_HIGH>;
++		pwr-gpios = <&gpio4 RK_PB1 GPIO_ACTIVE_HIGH>;
++	    reset-gpios = <&gpio4 RK_PC1 GPIO_ACTIVE_LOW>;
++        prepare-delay-ms = <200>;     // 复位拉高后等待1ms
++        reset-delay-ms = <200>;      // 复位拉低持续10ms
+         init-delay-ms = <120>;      // 复位释放后等待120ms
+         disable-delay-ms = <10>;    // 关闭显示后延时10ms
+         unprepare-delay-ms = <120>; // 断电前等待120ms
+@@ -601,7 +601,9 @@
+ 	dsi {
+ 		mipi_dsi_rst: mipi-dsi-rst {
+ 			rockchip,pins =
+-				<4 RK_PC1 RK_FUNC_GPIO &pcfg_pull_none>;
++				<4 RK_PC1 RK_FUNC_GPIO &pcfg_pull_none>,
++				<4 RK_PB1 RK_FUNC_GPIO &pcfg_output_high>,
++				<4 RK_PB3 RK_FUNC_GPIO &pcfg_output_high>;
+ 		};
+ 	};
+ 
+-- 
+2.25.1
+

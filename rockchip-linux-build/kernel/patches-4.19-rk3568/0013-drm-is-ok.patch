@@ -1,0 +1,638 @@
+From f77a0a1a8f20c08781a006c6d02044ada3acbf15 Mon Sep 17 00:00:00 2001
+From: yuji <yujibuzailai_sun@outlook.com>
+Date: Sat, 28 Jun 2025 10:12:18 +0800
+Subject: [PATCH] drm is ok
+
+---
+ .../dts/rockchip/rk3568-atk-atompi-ca1.dts    |  64 ++--
+ .../dts/rockchip/rk3568-atk-atompi-ca1.dtsi   |   4 +-
+ drivers/gpu/drm/panel/panel-simple.c          |  24 +-
+ drivers/iio/imu/inv_icm42600/inv_icm42600.h   |   3 +-
+ drivers/misc/dlpc3430.c                       |   9 +-
+ drivers/rtc/rtc-sd3178.c                      | 327 +++++++++++-------
+ 6 files changed, 272 insertions(+), 159 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
+index 4d3623d75..820296563 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
+@@ -162,8 +162,8 @@
+ 
+ 			rgb_timing0: timing0 {
+ 				clock-frequency = <62000000>;
+-				hactive = <720>;
+-				vactive = <480>;
++				hactive = <360>;
++				vactive = <240>;
+ 				hback-porch = <6>;
+ 				hfront-porch = <9>;
+ 				vback-porch = <10>;
+@@ -198,7 +198,7 @@
+ 
+ 	irled: irled {
+ 		compatible = "pwm-backlight";
+-		status = "disabled";
++		status = "okay";
+ 		pwms = <&pwm9 0 25000 0>;
+ 		brightness-levels = <
+ 			  0  20  20  21  21  22  22  23
+@@ -248,11 +248,22 @@
+ 		opt3001: opt3001@44 {
+ 			compatible = "ti,opt3001";
+ 			reg = <0x44>;
++			interrupt-parent = <&gpio3>;
++			interrupts = <RK_PD3 IRQ_TYPE_EDGE_FALLING>;
+ 		};
+ 	};
+ 
+ };
+ 
++&gpio4 {
++	gpio-init-hog {
++		gpio-hog;
++		gpios = <9 GPIO_ACTIVE_HIGH>, <11 GPIO_ACTIVE_HIGH>, <20 GPIO_ACTIVE_HIGH>, <0 GPIO_ACTIVE_HIGH>;
++		output-high;
++	};
++};
++
++
+ &pwm3 {
+ 	status = "okay";
+ 
+@@ -297,7 +308,9 @@
+ };
+ 
+ &pwm9 {
+-	status = "disabled";
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pwm9m0_pins>;
+ };
+ 
+ &soc_thermal {
+@@ -327,9 +340,9 @@
+ 		power-supply = <&vcc5v0_sys>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&mipi_dsi_rst>;
+-		enable-gpios = <&gpio4 RK_PB3 GPIO_ACTIVE_HIGH>;
+-		pwr-gpios = <&gpio4 RK_PB1 GPIO_ACTIVE_HIGH>;
+-	    reset-gpios = <&gpio4 RK_PC1 GPIO_ACTIVE_LOW>;
++		// enable-gpios = <&gpio4 RK_PB3 GPIO_ACTIVE_HIGH>;
++		// pwr-gpios = <&gpio4 RK_PB1 GPIO_ACTIVE_HIGH>;
++	    //reset-gpios = <&gpio4 RK_PC1 GPIO_ACTIVE_LOW>;
+         prepare-delay-ms = <200>;     // 复位拉高后等待1ms
+         reset-delay-ms = <200>;      // 复位拉低持续10ms
+         init-delay-ms = <120>;      // 复位释放后等待120ms
+@@ -573,8 +586,8 @@
+ 		// vddio-supply = <&vddio>;
+ 	};
+ 
+-    sd3178@68 {
+-        compatible = "whwave,sd3178";
++    sd3078@68 {
++        compatible = "whwave,sd3078";
+         reg = <0x32>;
+     };
+ 
+@@ -728,7 +741,7 @@
+ 	haptics: haptics@5a {
+ 		compatible = "ti,drv2605l";
+ 		reg = <0x5a>;
+-		//vbat-supply = <&vbat>;
++		//vbat-supply = <&vccio_acodec>;
+ 		enable-gpio = <&gpio1 RK_PA4 GPIO_ACTIVE_HIGH>;
+ 		mode = <DRV260X_LRA_MODE>;
+ 		library-sel = <DRV260X_LIB_LRA>;
+@@ -736,18 +749,21 @@
+ 		vib-overdrive-mv = <3200>;
+ 	};
+ 
+-	cw2015@62 {
+-		compatible = "cw201x";
+-		reg = <0x62>;
+-		bat_config_info = <0x15 0x42 0x60 0x59 0x52 0x58 0x4D 0x48
+-				   0x48 0x44 0x44 0x46 0x49 0x48 0x32 0x24
+-				   0x20 0x17 0x13 0x0F 0x19 0x3E 0x51 0x45
+-				   0x08 0x76 0x0B 0x85 0x0E 0x1C 0x2E 0x3E
+-				   0x4D 0x52 0x52 0x57 0x3D 0x1B 0x6A 0x2D
+-				   0x25 0x43 0x52 0x87 0x8F 0x91 0x94 0x52
+-				   0x82 0x8C 0x92 0x96 0xFF 0x7B 0xBB 0xCB
+-				   0x2F 0x7D 0x72 0xA5 0xB5 0xC1 0x46 0xAE>;
+-		monitor_sec = <5>;
+-		virtual_power = <0>;
+-	};
++	// cw2015@62 {
++	// 	compatible = "cw201x";
++	// 	reg = <0x62>;
++	// 	bat_config_info = <0x15 0x42 0x60 0x59 0x52 0x58 0x4D 0x48
++	// 			   0x48 0x44 0x44 0x46 0x49 0x48 0x32 0x24
++	// 			   0x20 0x17 0x13 0x0F 0x19 0x3E 0x51 0x45
++	// 			   0x08 0x76 0x0B 0x85 0x0E 0x1C 0x2E 0x3E
++	// 			   0x4D 0x52 0x52 0x57 0x3D 0x1B 0x6A 0x2D
++	// 			   0x25 0x43 0x52 0x87 0x8F 0x91 0x94 0x52
++	// 			   0x82 0x8C 0x92 0x96 0xFF 0x7B 0xBB 0xCB
++	// 			   0x2F 0x7D 0x72 0xA5 0xB5 0xC1 0x46 0xAE>;
++	// 	monitor_sec = <5>;
++	// 	virtual_power = <0>;
++	// 	virtual_power = <0>;
++    //     divider_res1 = <200>;
++    //     divider_res2 = <200>;
++	// };
+ };
+\ No newline at end of file
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dtsi b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dtsi
+index eb7e395da..258c3cae2 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dtsi
+@@ -128,7 +128,7 @@
+ 	};
+ 
+     rk809_sound: rk809-sound {
+-		status = "okay";
++		status = "disabled";
+ 		compatible = "simple-audio-card";
+ 		simple-audio-card,format = "i2s";
+ 		simple-audio-card,name = "rockchip,rk809-codec";
+@@ -479,7 +479,7 @@
+ 			hp-volume = <20>;
+ 			spk-volume = <3>;
+ 			mic-in-differential;
+-			status = "okay";
++			status = "disabled";
+ 		};
+ 	};
+ };
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 30459d91d..0deb0351e 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -120,7 +120,7 @@ struct panel_simple {
+ 	struct i2c_adapter *ddc;
+ 
+ 	struct gpio_desc *enable_gpio;
+-	struct gpio_desc *pwr_gpio;
++	//struct gpio_desc *pwr_gpio;
+ 	struct gpio_desc *reset_gpio;
+ 	int cmd_type;
+ 
+@@ -555,7 +555,7 @@ static int panel_simple_unprepare(struct drm_panel *panel)
+ 
+ 	gpiod_direction_output(p->enable_gpio, 0);
+ 
+-	gpiod_direction_output(p->pwr_gpio, 0);
++	//gpiod_direction_output(p->pwr_gpio, 0);
+ 
+ 	panel_simple_regulator_disable(p);
+ 
+@@ -582,7 +582,7 @@ static int panel_simple_prepare(struct drm_panel *panel)
+ 	}
+ 
+ 	gpiod_direction_output(p->enable_gpio, 1);
+-	gpiod_direction_output(p->pwr_gpio, 1);
++	//gpiod_direction_output(p->pwr_gpio, 1);
+ 
+ 	if (p->desc->delay.prepare)
+ 		panel_simple_sleep(p->desc->delay.prepare);
+@@ -722,14 +722,14 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
+ 		return err;
+ 	}
+ 
+-	panel->pwr_gpio = devm_gpiod_get_optional(dev, "pwr",
+-						     GPIOD_ASIS);
+-	if (IS_ERR(panel->pwr_gpio)) {
+-		err = PTR_ERR(panel->pwr_gpio);
+-		if (err != -EPROBE_DEFER)
+-			dev_err(dev, "failed to get pwr GPIO: %d\n", err);
+-		return err;
+-	}
++	// panel->pwr_gpio = devm_gpiod_get_optional(dev, "pwr",
++	// 					     GPIOD_ASIS);
++	// if (IS_ERR(panel->pwr_gpio)) {
++	// 	err = PTR_ERR(panel->pwr_gpio);
++	// 	if (err != -EPROBE_DEFER)
++	// 		dev_err(dev, "failed to get pwr GPIO: %d\n", err);
++	// 	return err;
++	// }
+ 
+ 	panel->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_ASIS);
+ 	if (IS_ERR(panel->reset_gpio)) {
+@@ -862,7 +862,7 @@ static void panel_simple_shutdown(struct device *dev)
+ 	if (panel->prepared) {
+ 		gpiod_direction_output(panel->reset_gpio, 1);
+ 		gpiod_direction_output(panel->enable_gpio, 0);
+-		gpiod_direction_output(panel->pwr_gpio, 0);
++		//gpiod_direction_output(panel->pwr_gpio, 0);
+ 		panel_simple_regulator_disable(panel);
+ 	}
+ }
+diff --git a/drivers/iio/imu/inv_icm42600/inv_icm42600.h b/drivers/iio/imu/inv_icm42600/inv_icm42600.h
+index 19c9d02d8..cd691b74b 100644
+--- a/drivers/iio/imu/inv_icm42600/inv_icm42600.h
++++ b/drivers/iio/imu/inv_icm42600/inv_icm42600.h
+@@ -302,7 +302,8 @@ struct inv_icm42600_state {
+ #define INV_ICM42600_WHOAMI_ICM40608			0x39
+ #define INV_ICM42600_WHOAMI_ICM42600			0x40
+ #define INV_ICM42600_WHOAMI_ICM42602			0x41
+-#define INV_ICM42600_WHOAMI_ICM42605			0x42
++//#define INV_ICM42600_WHOAMI_ICM42605			0x42
++#define INV_ICM42600_WHOAMI_ICM42605			0x47
+ #define INV_ICM42600_WHOAMI_ICM42622			0x46
+ 
+ /* User bank 1 (MSB 0x10) */
+diff --git a/drivers/misc/dlpc3430.c b/drivers/misc/dlpc3430.c
+index a26628680..e8bb3d974 100644
+--- a/drivers/misc/dlpc3430.c
++++ b/drivers/misc/dlpc3430.c
+@@ -144,9 +144,12 @@ static int dlpc3430_reg_init(struct i2c_client *client)
+         size_t len;
+     } seqs[] = {
+         { (u8[]){0x16, 0x01}, 2 },
+-        { (u8[]){0x10, 0x00, 0x00, 0x00, 0x00, 0xd0, 0x02, 0xe0, 0x01}, 9 },
+-        { (u8[]){0x12, 67, 0x00, 0x00, 0x00, 0xd0, 0x02, 0xe0, 0x01}, 9 },
+-        { (u8[]){0x2e, 0xd0, 0x02, 0xE0, 0x01}, 5 },
++        // { (u8[]){0x10, 0x00, 0x00, 0x00, 0x00, 0xd0, 0x02, 0xe0, 0x01}, 9 },
++        // { (u8[]){0x12, 67, 0x00, 0x00, 0x00, 0xd0, 0x02, 0xe0, 0x01}, 9 },
++        // { (u8[]){0x2e, 0xd0, 0x02, 0xE0, 0x01}, 5 },
++        { (u8[]){0x10, 0x00, 0x00, 0x00, 0x00, 0x68, 0x01, 0xf0, 0x00}, 9 },
++        { (u8[]){0x12, 0x00, 0x00, 0x00, 0x00, 0x68, 0x01, 0xf0, 0x00}, 9 },
++        { (u8[]){0x2e, 0x68, 0x01, 0xf0, 0x00}, 5 },
+         { (u8[]){0x14, 0x04}, 2 },
+         { (u8[]){0x07, 0x40}, 2 },
+         { (u8[]){0x05, 0x00}, 2 },
+diff --git a/drivers/rtc/rtc-sd3178.c b/drivers/rtc/rtc-sd3178.c
+index fef2bf9af..9b0e57f22 100644
+--- a/drivers/rtc/rtc-sd3178.c
++++ b/drivers/rtc/rtc-sd3178.c
+@@ -1,158 +1,251 @@
+ // SPDX-License-Identifier: GPL-2.0
++/*
++ * Real Time Clock (RTC) Driver for sd3078
++ * Copyright (C) 2018 Zoro Li
++ */
++
++#include <linux/bcd.h>
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++#include <linux/rtc.h>
++#include <linux/slab.h>
++
++#define SD3078_REG_SC			0x00
++#define SD3078_REG_MN			0x01
++#define SD3078_REG_HR			0x02
++#define SD3078_REG_DW			0x03
++#define SD3078_REG_DM			0x04
++#define SD3078_REG_MO			0x05
++#define SD3078_REG_YR			0x06
++
++#define SD3078_REG_CTRL1		0x0f
++#define SD3078_REG_CTRL2		0x10
++#define SD3078_REG_CTRL3		0x11
++
++#define SD3078_REG_CHG_CTRL 0x18
++// 0x81 = 0b10000010 = EN_Charge=1 + Charge1=0 + Charge0=1 (5kΩ) 80uA
++
++
++#define KEY_WRITE1		0x80
++#define KEY_WRITE2		0x04
++#define KEY_WRITE3		0x80
++
++#define NUM_TIME_REGS   (SD3078_REG_YR - SD3078_REG_SC + 1)
++
++/*
++ * The sd3078 has write protection
++ * and we can choose whether or not to use it.
++ * Write protection is turned off by default.
++ */
++#define WRITE_PROTECT_EN	0
++
++struct sd3078 {
++	struct rtc_device	*rtc;
++	struct regmap		*regmap;
++};
+ 
++/*
++ * In order to prevent arbitrary modification of the time register,
++ * when modification of the register,
++ * the "write" bit needs to be written in a certain order.
++ * 1. set WRITE1 bit
++ * 2. set WRITE2 bit
++ * 3. set WRITE3 bit
++ */
++static void sd3078_enable_reg_write(struct sd3078 *sd3078)
++{
++	regmap_update_bits(sd3078->regmap, SD3078_REG_CTRL2,
++			   KEY_WRITE1, KEY_WRITE1);
++	regmap_update_bits(sd3078->regmap, SD3078_REG_CTRL1,
++			   KEY_WRITE2, KEY_WRITE2);
++	regmap_update_bits(sd3078->regmap, SD3078_REG_CTRL1,
++			   KEY_WRITE3, KEY_WRITE3);
++}
+ 
+-#include<linux/module.h>
+-#include<linux/i2c.h>
+-#include<linux/rtc.h>
+-#include<linux/bcd.h>
+-
+-
+-#define SD3178_REG_SECONDS      0x00
+-#define SD3178_REG_ALARM_SEC    0x07
+-#define SD3178_REG_ALARM_MIN    0x08
+-#define SD3178_REG_ALARM_HOUR   0x09
+-#define SD3178_REG_ALARM_EN     0x0E
+-#define SD3178_REG_CTRL1        0x0F
+-#define SD3178_REG_CTRL2        0x10
+-#define SD3178_REG_CTRL3        0x11
+-
+-
+-struct sd3178_rtc {
+-    struct i2c_client *client;
+-    struct rtc_device *rtc;
+-};
++#if WRITE_PROTECT_EN
++/*
++ * In order to prevent arbitrary modification of the time register,
++ * we should disable the write function.
++ * when disable write,
++ * the "write" bit needs to be clear in a certain order.
++ * 1. clear WRITE2 bit
++ * 2. clear WRITE3 bit
++ * 3. clear WRITE1 bit
++ */
++static void sd3078_disable_reg_write(struct sd3078 *sd3078)
++{
++	regmap_update_bits(sd3078->regmap, SD3078_REG_CTRL1,
++			   KEY_WRITE2, 0);
++	regmap_update_bits(sd3078->regmap, SD3078_REG_CTRL1,
++			   KEY_WRITE3, 0);
++	regmap_update_bits(sd3078->regmap, SD3078_REG_CTRL2,
++			   KEY_WRITE1, 0);
++}
++#endif
+ 
+-static int sd3178_read_time(struct device *dev, struct rtc_time *tm)
++static int sd3078_rtc_read_time(struct device *dev, struct rtc_time *tm)
+ {
+-    u8 buf[7];
++	unsigned char hour;
++	unsigned char rtc_data[NUM_TIME_REGS] = {0};
++	struct i2c_client *client = to_i2c_client(dev);
++	struct sd3078 *sd3078 = i2c_get_clientdata(client);
+ 	int ret;
+-	struct sd3178_rtc *chip = dev_get_drvdata(dev);
+-	struct i2c_client *client = chip->client;
+ 
+-	ret = i2c_smbus_read_i2c_block_data(client, SD3178_REG_SECONDS, 7, buf);
+-	if (ret < 0)
++	ret = regmap_bulk_read(sd3078->regmap, SD3078_REG_SC, rtc_data,
++			       NUM_TIME_REGS);
++	if (ret < 0) {
++		dev_err(dev, "reading from RTC failed with err:%d\n", ret);
+ 		return ret;
+-
+-    tm->tm_sec  = bcd2bin(buf[0] & 0x7F);    // 秒（最高位保留）
+-    tm->tm_min  = bcd2bin(buf[1] & 0x7F);    // 分（最高位保留）
+-    tm->tm_hour = bcd2bin(buf[2] & 0x3F);    // 小时（使用 24 小时制）
+-    tm->tm_wday = bcd2bin(buf[3] & 0x07);             // 星期（0～6）
+-    tm->tm_mday = bcd2bin(buf[4] & 0x3F);    // 日（1～31）
+-    tm->tm_mon  = bcd2bin(buf[5] & 0x1F) - 1;// 月（1～12）→ Linux 使用 0～11
+-    tm->tm_year = bcd2bin(buf[6]) + 100;     // 年（0～99）→ Linux 以 1900 为基准，所以 +100 = 2000 年起
+-
++	}
++
++	tm->tm_sec	= bcd2bin(rtc_data[SD3078_REG_SC] & 0x7F);
++	tm->tm_min	= bcd2bin(rtc_data[SD3078_REG_MN] & 0x7F);
++
++	/*
++	 * The sd3078 supports 12/24 hour mode.
++	 * When getting time,
++	 * we need to convert the 12 hour mode to the 24 hour mode.
++	 */
++	hour = rtc_data[SD3078_REG_HR];
++	if (hour & 0x80) /* 24H MODE */
++		tm->tm_hour = bcd2bin(rtc_data[SD3078_REG_HR] & 0x3F);
++	else if (hour & 0x20) /* 12H MODE PM */
++		tm->tm_hour = bcd2bin(rtc_data[SD3078_REG_HR] & 0x1F) + 12;
++	else /* 12H MODE AM */
++		tm->tm_hour = bcd2bin(rtc_data[SD3078_REG_HR] & 0x1F);
++
++	tm->tm_mday = bcd2bin(rtc_data[SD3078_REG_DM] & 0x3F);
++	tm->tm_wday = rtc_data[SD3078_REG_DW] & 0x07;
++	tm->tm_mon	= bcd2bin(rtc_data[SD3078_REG_MO] & 0x1F) - 1;
++	tm->tm_year = bcd2bin(rtc_data[SD3078_REG_YR]) + 100;
+ 
+ 	return 0;
+ }
+ 
+-static int sd3178_set_time(struct device *dev, struct rtc_time *tm)
++static int sd3078_rtc_set_time(struct device *dev, struct rtc_time *tm)
+ {
+-    u8 buf[8];
++	unsigned char rtc_data[NUM_TIME_REGS];
++	struct i2c_client *client = to_i2c_client(dev);
++	struct sd3078 *sd3078 = i2c_get_clientdata(client);
+ 	int ret;
+-	struct sd3178_rtc *chip = dev_get_drvdata(dev);
+-	struct i2c_client *client = chip->client;
+-
+-	/* Enable write sequence: WRTC1 -> WRTC2 -> WRTC3 */
+-	i2c_smbus_write_byte_data(client, SD3178_REG_CTRL2, 0x01);
+-	i2c_smbus_write_byte_data(client, SD3178_REG_CTRL1, 0x01);
+-	i2c_smbus_write_byte_data(client, SD3178_REG_CTRL3, 0x01);
+-
+-	buf[0] = SD3178_REG_SECONDS;
+-	buf[1] = bin2bcd(tm->tm_sec);
+-	buf[2] = bin2bcd(tm->tm_min);
+-	buf[3] = bin2bcd(tm->tm_hour);
+-	buf[4] = bcd2bin(tm->tm_wday & 0x07);
+-	buf[5] = bin2bcd(tm->tm_mday);
+-	buf[6] = bin2bcd(tm->tm_mon + 1);
+-	buf[7] = bin2bcd(tm->tm_year - 100);
+-
+-	ret = i2c_smbus_write_i2c_block_data(client, buf[0], 7, &buf[1]);
+-	return ret < 0 ? ret : 0;
+-}
+ 
+-static int sd3178_read_alarm(struct device *dev, struct rtc_wkalrm *alrm)
+-{
+-    u8 sec, min, hour, en;
+-	//int ret;
+-	struct sd3178_rtc *chip = dev_get_drvdata(dev);
+-	struct i2c_client *client = chip->client;
+-
+-	sec = i2c_smbus_read_byte_data(client, SD3178_REG_ALARM_SEC);
+-	min = i2c_smbus_read_byte_data(client, SD3178_REG_ALARM_MIN);
+-	hour = i2c_smbus_read_byte_data(client, SD3178_REG_ALARM_HOUR);
+-	en = i2c_smbus_read_byte_data(client, SD3178_REG_ALARM_EN);
+-
+-	alrm->time.tm_sec  = bcd2bin(sec & 0x7F);
+-	alrm->time.tm_min  = bcd2bin(min & 0x7F);
+-	alrm->time.tm_hour = bcd2bin(hour & 0x3F);
+-	alrm->enabled = !!(en & 0x01);
++	rtc_data[SD3078_REG_SC] = bin2bcd(tm->tm_sec);
++	rtc_data[SD3078_REG_MN] = bin2bcd(tm->tm_min);
++	rtc_data[SD3078_REG_HR] = bin2bcd(tm->tm_hour) | 0x80;
++	rtc_data[SD3078_REG_DM] = bin2bcd(tm->tm_mday);
++	rtc_data[SD3078_REG_DW] = tm->tm_wday & 0x07;
++	rtc_data[SD3078_REG_MO] = bin2bcd(tm->tm_mon) + 1;
++	rtc_data[SD3078_REG_YR] = bin2bcd(tm->tm_year - 100);
++
++#if WRITE_PROTECT_EN
++	sd3078_enable_reg_write(sd3078);
++#endif
++
++	ret = regmap_bulk_write(sd3078->regmap, SD3078_REG_SC, rtc_data,
++				NUM_TIME_REGS);
++	if (ret < 0) {
++		dev_err(dev, "writing to RTC failed with err:%d\n", ret);
++		return ret;
++	}
++
++#if WRITE_PROTECT_EN
++	sd3078_disable_reg_write(sd3078);
++#endif
++
+ 	return 0;
+ }
+ 
+-static int sd3178_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
++#if 0
++static int sd3078_enable_charge(struct sd3078 *sd3078)
+ {
+-    u8 sec, min, hour;
+-	struct sd3178_rtc *chip = dev_get_drvdata(dev);
+-	struct i2c_client *client = chip->client;
+-
+-	sec = bin2bcd(alrm->time.tm_sec) & 0x7F;
+-	min = bin2bcd(alrm->time.tm_min) & 0x7F;
+-	hour = bin2bcd(alrm->time.tm_hour) & 0x3F;
++    int ret;
+ 
+-	i2c_smbus_write_byte_data(client, SD3178_REG_ALARM_SEC, sec);
+-	i2c_smbus_write_byte_data(client, SD3178_REG_ALARM_MIN, min);
+-	i2c_smbus_write_byte_data(client, SD3178_REG_ALARM_HOUR, hour);
+-	i2c_smbus_write_byte_data(client, SD3178_REG_ALARM_EN, alrm->enabled ? 0x01 : 0x00);
++    ret = regmap_write(sd3078->regmap, SD3078_REG_CHG_CTRL, 0x81);
++    if (ret) {
++        //dev_err(dev, "Failed to enable charge function, ret=%d\n", ret);
++        return ret;
++    }
+ 
+-	return 0;
++    //dev_info(dev, "Charge function enabled (0x18=0x81)\n");
++    return 0;
+ }
++#endif
++
++static const struct rtc_class_ops sd3078_rtc_ops = {
++	.read_time	= sd3078_rtc_read_time,
++	.set_time	= sd3078_rtc_set_time,
++};
+ 
+-static const struct rtc_class_ops sd3178_rtc_ops = {
+-    .read_time = sd3178_read_time,
+-    .set_time = sd3178_set_time,
+-    .read_alarm = sd3178_read_alarm,
+-    .set_alarm = sd3178_set_alarm,
++static const struct regmap_config regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++	.max_register = 0x11,
+ };
+ 
+-static int sd3178_probe(struct i2c_client *client, const struct i2c_device_id *id)
++static int sd3078_probe(struct i2c_client *client,
++			const struct i2c_device_id *id)
+ {
+-	struct sd3178_rtc *chip;
++	int ret;
++	struct sd3078 *sd3078;
+ 
+-	chip = devm_kzalloc(&client->dev, sizeof(*chip), GFP_KERNEL);
+-	if (!chip)
++	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
++		return -ENODEV;
++
++	sd3078 = devm_kzalloc(&client->dev, sizeof(*sd3078), GFP_KERNEL);
++	if (!sd3078)
+ 		return -ENOMEM;
+ 
+-	chip->client = client;
+-	i2c_set_clientdata(client, chip);
++	sd3078->regmap = devm_regmap_init_i2c(client, &regmap_config);
++	if (IS_ERR(sd3078->regmap)) {
++		dev_err(&client->dev, "regmap allocation failed\n");
++		return PTR_ERR(sd3078->regmap);
++	}
++
++	i2c_set_clientdata(client, sd3078);
+ 
+-	chip->rtc = devm_rtc_device_register(&client->dev,
+-		client->name, &sd3178_rtc_ops, THIS_MODULE);
++	sd3078->rtc = devm_rtc_allocate_device(&client->dev);
++	if (IS_ERR(sd3078->rtc))
++		return PTR_ERR(sd3078->rtc);
+ 
+-	return PTR_ERR_OR_ZERO(chip->rtc);
++	sd3078->rtc->ops = &sd3078_rtc_ops;
++	sd3078->rtc->range_min = RTC_TIMESTAMP_BEGIN_2000;
++	sd3078->rtc->range_max = RTC_TIMESTAMP_END_2099;
++
++	ret = rtc_register_device(sd3078->rtc);
++	if (ret)
++		return ret;
++
++	sd3078_enable_reg_write(sd3078);
++
++	//sd3078_enable_charge(sd3078);
++
++	return 0;
+ }
+ 
+-static const struct i2c_device_id sd3178_id[] = {
+-	{ "sd3178", 0 },
++static const struct i2c_device_id sd3078_id[] = {
++	{"sd3078", 0},
+ 	{ }
+ };
+-MODULE_DEVICE_TABLE(i2c, sd3178_id);
++MODULE_DEVICE_TABLE(i2c, sd3078_id);
+ 
+-static const struct of_device_id sd3178_dt_ids[] = {
+-	{ .compatible = "whwave,sd3178" },
+-	{ }
++static const struct of_device_id rtc_dt_match[] = {
++	{ .compatible = "whwave,sd3078" },
++	{},
+ };
+-MODULE_DEVICE_TABLE(of, sd3178_dt_ids);
++MODULE_DEVICE_TABLE(of, rtc_dt_match);
+ 
+-static struct i2c_driver sd3178_driver = {
+-	.driver = {
+-		.name = "rtc-sd3178",
+-		.of_match_table = sd3178_dt_ids,
++static struct i2c_driver sd3078_driver = {
++	.driver     = {
++		.name   = "sd3078",
++		.of_match_table = of_match_ptr(rtc_dt_match),
+ 	},
+-	.probe = sd3178_probe,
+-	.id_table = sd3178_id,
++	.probe      = sd3078_probe,
++	.id_table   = sd3078_id,
+ };
+-module_i2c_driver(sd3178_driver);
+ 
+-MODULE_DESCRIPTION("SD3178 RTC Driver");
+-MODULE_AUTHOR("Sarainco");
+-MODULE_LICENSE("GPL");
+\ No newline at end of file
++module_i2c_driver(sd3078_driver);
++
++MODULE_AUTHOR("Dianlong Li <long17.cool@163.com>");
++MODULE_DESCRIPTION("SD3078 RTC driver");
++MODULE_LICENSE("GPL v2");
+-- 
+2.25.1
+

@@ -1,0 +1,102 @@
+From 81a2f1a5d724a4439a6fb5712233ca8b3016c7da Mon Sep 17 00:00:00 2001
+From: yuji <yujibuzailai_sun@outlook.com>
+Date: Tue, 10 Jun 2025 09:14:19 +0800
+Subject: [PATCH] feat:add pwm beep driver
+
+---
+ arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts  | 9 +++++++--
+ arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dtsi | 7 ++++++-
+ arch/arm64/boot/dts/rockchip/rk3568.dtsi                | 4 ++--
+ arch/arm64/configs/rockchip_linux_defconfig             | 1 +
+ 4 files changed, 16 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
+index 218820ca2..bb265c21a 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
+@@ -189,6 +189,12 @@
+ 		};
+ 	};
+ 
++	beeper {
++		compatible = "pwm-beeper";
++		pwms = <&pwm8 0 25000 0>;
++		//amp-supply = <&beeper_amp>;
++	};
++
+ };
+ 
+ &pwm3 {
+@@ -230,9 +236,8 @@
+ 	};
+ };
+ 
+-&pwm9 {
++&pwm8 {
+ 	status = "okay";
+-
+ };
+ 
+ &soc_thermal {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dtsi b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dtsi
+index c61101967..633ec3718 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dtsi
+@@ -172,7 +172,8 @@
+ 		cooling-min-state = <0>;
+ 		cooling-max-state = <22>;
+ 		#cooling-cells = <2>;
+-		pwms = <&pwm0 0 25000 0>;
++		//pwms = <&pwm0 0 25000 0>;
++		pwms = <&pwm10 0 25000 0>;
+ 		cooling-levels = <
+ 			0 50 100 120 150 170 180 200
+ 			205 210 215 220 225 230 235 240
+@@ -913,6 +914,10 @@
+ 	status = "okay";
+ };
+ 
++&pwm10 {
++	status = "okay";
++};
++
+ &pinctrl {
+ 
+ 	pmic {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568.dtsi b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
+index 0f278c052..837aea7ce 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
+@@ -3220,7 +3220,7 @@
+ 		reg = <0x0 0xfe6f0000 0x0 0x10>;
+ 		#pwm-cells = <3>;
+ 		pinctrl-names = "active";
+-		pinctrl-0 = <&pwm8m0_pins>;
++		pinctrl-0 = <&pwm8m1_pins>;
+ 		clocks = <&cru CLK_PWM2>, <&cru PCLK_PWM2>;
+ 		clock-names = "pwm", "pclk";
+ 		status = "disabled";
+@@ -3242,7 +3242,7 @@
+ 		reg = <0x0 0xfe6f0020 0x0 0x10>;
+ 		#pwm-cells = <3>;
+ 		pinctrl-names = "active";
+-		pinctrl-0 = <&pwm10m0_pins>;
++		pinctrl-0 = <&pwm10m1_pins>;
+ 		clocks = <&cru CLK_PWM2>, <&cru PCLK_PWM2>;
+ 		clock-names = "pwm", "pclk";
+ 		status = "disabled";
+diff --git a/arch/arm64/configs/rockchip_linux_defconfig b/arch/arm64/configs/rockchip_linux_defconfig
+index 29d2c7186..ad2b3d5fd 100644
+--- a/arch/arm64/configs/rockchip_linux_defconfig
++++ b/arch/arm64/configs/rockchip_linux_defconfig
+@@ -222,6 +222,7 @@ CONFIG_PROXIMITY_DEVICE=y
+ CONFIG_PS_AP321XX=y
+ CONFIG_INPUT_MISC=y
+ CONFIG_INPUT_UINPUT=y
++CONFIG_INPUT_PWM_BEEPER=y
+ CONFIG_INPUT_RK805_PWRKEY=y
+ CONFIG_INPUT_DRV260X_HAPTICS=y
+ # CONFIG_SERIO is not set
+-- 
+2.25.1
+

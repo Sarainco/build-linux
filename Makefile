@@ -11,7 +11,7 @@ CROSS_COMPILE := $(HOME)/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-
 #CROSS_COMPILE := $(HOME)/toolchain/toolchain-rk3562/bin/aarch64-none-linux-gnu-
 
 IMAGE_FILE_ROOTFS := rootfs.ext4
-IMAGE_SIZE_ROOTFS := 512M
+IMAGE_SIZE_ROOTFS := 800M
 
 all: busybox;
 
@@ -287,10 +287,12 @@ rootfs:
 	$(ROOTFS)/run \
 	$(ROOTFS)/mnt \
 	$(ROOTFS)/userdata \
-	$(ROOTFS)/bin
+	$(ROOTFS)/bin \
+	$(ROOTFS)/opt/qt6
 	cp -av fs-overlay/* $(ROOTFS)/
-	cp -av $(V4L_BUILD)/* $(ROOTFS)/
-	cp -av $(OPEN_SSL_BUILD)/* $(ROOTFS)/
+# 	cp -av $(V4L_BUILD)/* $(ROOTFS)/
+# 	cp -av $(OPEN_SSL_BUILD)/* $(ROOTFS)/
+	cp -av $(QT6_INSTALL)/* $(ROOTFS)/opt/qt6
 
 #@echo "Copying busybox shared libs..."
 #ldd $(ROOTFS_DIR)/bin/busybox | awk '{print $$3}' | xargs -I{} cp -uv {} $(ROOTFS_DIR)/lib/
@@ -313,8 +315,8 @@ clean-dist:
 prepare-src:
 	mkdir -p $(SRC_DIR)
 	tar xf $(DL_DIR)/$(BUSYBOX)* -C $(SRC_DIR) --overwrite
-	tar xf $(DL_DIR)/$(V4L)* -C $(SRC_DIR) --overwrite
-	tar xf $(DL_DIR)/$(OPEN_SSL)* -C $(SRC_DIR) --overwrite
+# 	tar xf $(DL_DIR)/$(V4L)* -C $(SRC_DIR) --overwrite
+# 	tar xf $(DL_DIR)/$(OPEN_SSL)* -C $(SRC_DIR) --overwrite
 
 
 .PHONY: all busybox v4l image

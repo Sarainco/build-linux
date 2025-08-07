@@ -8,7 +8,7 @@ set(CMAKE_C_COMPILER %CROSS_COMPILE%gcc)
 set(CMAKE_CXX_COMPILER %CROSS_COMPILE%g++)
 
 set(CMAKE_SYSROOT %TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot)
-set(CMAKE_EXE_LINKER_FLAGS "-Wl,-rpath-link=%TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -L %TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -Wl,--whole-archive -Wl,--no-whole-archive")
+set(CMAKE_EXE_LINKER_FLAGS "-Wl,-rpath-link=%TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -L %TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -lmali_hook -Wl,--whole-archive -lmali_hook_injector -Wl,--no-whole-archive")
 
 set(Libdrm_INCLUDE_DIR %TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot/usr/include)
 set(Libdrm_LIBRARY %TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot/usr/lib/libdrm.so)

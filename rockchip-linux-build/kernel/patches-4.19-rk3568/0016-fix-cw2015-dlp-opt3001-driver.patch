@@ -1,0 +1,488 @@
+From a435e34fe11c9dcac7917e20205325624b99f550 Mon Sep 17 00:00:00 2001
+From: Sarainco <sarainco.sun@blztech.com>
+Date: Sat, 19 Jul 2025 09:50:27 +0800
+Subject: [PATCH] fix cw2015 dlp opt3001 driver
+
+---
+ .../dts/rockchip/rk3568-atk-atompi-ca1.dts    |  33 ++--
+ .../dts/rockchip/rk3568-atk-atompi-ca1.dtsi   |  17 +-
+ drivers/iio/light/opt3001.c                   | 157 +++++++++++++++++-
+ drivers/misc/dlpc3430.c                       |  40 +++--
+ drivers/power/supply/cw2015_battery.c         |  51 +++++-
+ include/linux/power/cw2015_battery.h          |   1 +
+ 6 files changed, 262 insertions(+), 37 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
+index c80c6ea57..1f72982e8 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
+@@ -69,12 +69,12 @@
+ 		autorepeat;
+ 
+ 
+-		// power_key {
+-		// 	label = "Key Power";
+-		// 	gpios = <&gpio3 RK_PB1 GPIO_ACTIVE_HIGH>;
+-		// 	linux,code = <KEY_POWER>;//116
+-		// 	debounce-interval = <20>;
+-		// };
++		power_key {
++			label = "Key Power";
++			gpios = <&gpio3 RK_PB1 GPIO_ACTIVE_HIGH>;
++			linux,code = <KEY_POWER>;//116
++			debounce-interval = <20>;
++		};
+ 
+ 		up_key {
+ 			label = "Key Up";
+@@ -210,6 +210,7 @@
+ 		#size-cells = <0>;
+ 
+ 		opt3001: opt3001@44 {
++			//status = "disabled";
+ 			compatible = "ti,opt3001";
+ 			reg = <0x44>;
+ 			interrupt-parent = <&gpio3>;
+@@ -684,17 +685,17 @@
+ 	cw2015@62 {
+ 		compatible = "cw201x";
+ 		reg = <0x62>;
+-		bat_config_info = <0x15 0x42 0x60 0x59 0x52 0x58 0x4D 0x48
+-				   0x48 0x44 0x44 0x46 0x49 0x48 0x32 0x24
+-				   0x20 0x17 0x13 0x0F 0x19 0x3E 0x51 0x45
+-				   0x08 0x76 0x0B 0x85 0x0E 0x1C 0x2E 0x3E
+-				   0x4D 0x52 0x52 0x57 0x3D 0x1B 0x6A 0x2D
+-				   0x25 0x43 0x52 0x87 0x8F 0x91 0x94 0x52
+-				   0x82 0x8C 0x92 0x96 0xFF 0x7B 0xBB 0xCB
+-				   0x2F 0x7D 0x72 0xA5 0xB5 0xC1 0x46 0xAE>;
++		bat_config_info = <0x15 0x39 0x6E 0x38 0x34 0x50 0x64 0x64
++				   0x5A 0x52 0x52 0x57 0x56 0x66 0x60 0x56
++				   0x50 0x49 0x47 0x4A 0x56 0x6B 0x5D 0x65
++				   0x83 0x0C 0x08 0xF6 0x22 0x42 0x59 0x64
++				   0x61 0x72 0x79 0x70 0x3C 0x18 0xEF 0x37
++				   0x09 0x2B 0x4A 0x7B 0x8D 0x91 0x91 0x43
++				   0x53 0x81 0x96 0xA2 0x80 0x58 0x7B 0xCB
++				   0x2F 0x00 0x64 0xA5 0xB5 0xC1 0x46 0xAE>;
+ 		monitor_sec = <5>;
+ 		virtual_power = <0>;
+-        divider_res1 = <200>;
+-        divider_res2 = <200>;
++		design_capacity = <6600>;       // mAh
++    	athd = <10>;
+ 	};
+ };
+\ No newline at end of file
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dtsi b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dtsi
+index fec4b4d05..08de04db6 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dtsi
+@@ -162,8 +162,23 @@
+ 	leds: leds {
+ 		compatible = "gpio-leds";
+ 		work_led: work {
+-			gpios = <&gpio0 RK_PC3 GPIO_ACTIVE_HIGH>;
++			gpios = <&gpio0 RK_PB7 GPIO_ACTIVE_LOW>;
+ 			linux,default-trigger = "heartbeat";
++			default-state = "on";
++		};
++
++		user_led0 {
++			label = "user-led0";
++			gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "default-on";
++			default-state = "off";
++		};
++
++		user_led1 {
++			label = "user-led1";
++			gpios = <&gpio4 RK_PA3 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "default-on";
++			default-state = "off";
+ 		};
+ 	};
+ 
+diff --git a/drivers/iio/light/opt3001.c b/drivers/iio/light/opt3001.c
+index 162eff78c..b16cd10ac 100644
+--- a/drivers/iio/light/opt3001.c
++++ b/drivers/iio/light/opt3001.c
+@@ -16,6 +16,8 @@
+  * more details.
+  */
+ 
++#if 1
++
+ #include <linux/bitops.h>
+ #include <linux/delay.h>
+ #include <linux/device.h>
+@@ -66,7 +68,7 @@
+ #define OPT3001_REG_MANTISSA(n)		((n) & 0xfff)
+ 
+ #define OPT3001_INT_TIME_LONG		800000
+-#define OPT3001_INT_TIME_SHORT		100000
++#define OPT3001_INT_TIME_SHORT		0
+ 
+ /*
+  * Time to wait for conversion result to be ready. The device datasheet
+@@ -861,3 +863,156 @@ module_i2c_driver(opt3001_driver);
+ MODULE_LICENSE("GPL v2");
+ MODULE_AUTHOR("Andreas Dannenberg <dannenberg@ti.com>");
+ MODULE_DESCRIPTION("Texas Instruments OPT3001 Light Sensor Driver");
++
++
++#else
++#include <linux/module.h>
++#include <linux/fs.h>
++#include <linux/i2c.h>
++#include <linux/uaccess.h>
++#include <linux/cdev.h>
++#include <linux/device.h>
++#include <linux/delay.h>
++
++#define OPT3001_I2C_ADDR       0x44
++#define OPT3001_REG_RESULT     0x00
++#define OPT3001_REG_CONFIG     0x01
++#define OPT3001_CONFIG_SINGLE  0xC410
++
++static struct i2c_client *opt3001_client;
++static struct class *opt3001_class;
++static dev_t opt3001_devt;
++static struct cdev opt3001_cdev;
++static int lux100_cache;
++
++static ssize_t opt3001_show_lux(struct device *dev, struct device_attribute *attr, char *buf)
++{
++    return snprintf(buf, PAGE_SIZE, "%d\n", lux100_cache);
++}
++static DEVICE_ATTR(lux, 0444, opt3001_show_lux, NULL);
++
++static int opt3001_read_lux_from_sensor(void)
++{
++    int ret;
++    u16 config = cpu_to_be16(OPT3001_CONFIG_SINGLE);
++    u16 raw;
++    int exponent, mantissa;
++
++    ret = i2c_smbus_write_word_data(opt3001_client, OPT3001_REG_CONFIG, config);
++    if (ret < 0)
++        return ret;
++
++    msleep(10); // 等待转换完成
++
++    ret = i2c_smbus_read_word_data(opt3001_client, OPT3001_REG_RESULT);
++    if (ret < 0)
++        return ret;
++
++    raw = be16_to_cpu(ret);
++    exponent = (raw >> 12) & 0xF;
++    mantissa = raw & 0xFFF;
++    lux100_cache = mantissa * (1 << exponent); // 放大100倍的Lux
++
++    return 0;
++}
++
++static ssize_t opt3001_read(struct file *file, char __user *buf, size_t count, loff_t *ppos)
++{
++    char result_str[16];
++    int len;
++
++    if (*ppos > 0)
++        return 0; // EOF after one read
++
++    if (opt3001_read_lux_from_sensor() < 0)
++        return -EIO;
++
++    len = snprintf(result_str, sizeof(result_str), "%d\n", lux100_cache);
++    if (copy_to_user(buf, result_str, len))
++        return -EFAULT;
++
++    *ppos += len;
++    return len;
++}
++
++static struct file_operations opt3001_fops = {
++    .owner = THIS_MODULE,
++    .read = opt3001_read,
++};
++
++static int opt3001_probe(struct i2c_client *client, const struct i2c_device_id *id)
++{
++    int ret;
++    opt3001_client = client;
++
++    ret = alloc_chrdev_region(&opt3001_devt, 0, 1, "opt3001");
++    if (ret)
++        return ret;
++
++    cdev_init(&opt3001_cdev, &opt3001_fops);
++    ret = cdev_add(&opt3001_cdev, opt3001_devt, 1);
++    if (ret)
++        goto unregister_chrdev;
++
++    opt3001_class = class_create(THIS_MODULE, "opt3001_class");
++    if (IS_ERR(opt3001_class)) {
++        ret = PTR_ERR(opt3001_class);
++        goto del_cdev;
++    }
++
++    device_create(opt3001_class, NULL, opt3001_devt, NULL, "opt3001");
++
++    ret = device_create_file(&client->dev, &dev_attr_lux);
++    if (ret)
++        dev_warn(&client->dev, "lux attribute not created\n");
++
++    dev_info(&client->dev, "opt3001 driver initialized\n");
++    return 0;
++
++del_cdev:
++    cdev_del(&opt3001_cdev);
++unregister_chrdev:
++    unregister_chrdev_region(opt3001_devt, 1);
++    return ret;
++}
++
++static int opt3001_remove(struct i2c_client *client)
++{
++    device_remove_file(&client->dev, &dev_attr_lux);
++    device_destroy(opt3001_class, opt3001_devt);
++    class_destroy(opt3001_class);
++    cdev_del(&opt3001_cdev);
++    unregister_chrdev_region(opt3001_devt, 1);
++    return 0;
++}
++
++static const struct i2c_device_id opt3001_id[] = {
++    { "opt3001", 0 },
++    { }
++};
++MODULE_DEVICE_TABLE(i2c, opt3001_id);
++
++static const struct of_device_id opt3001_of_match[] = {
++    { .compatible = "ti,opt3001" },
++    { }
++};
++MODULE_DEVICE_TABLE(of, opt3001_of_match);
++
++static struct i2c_driver opt3001_driver = {
++    .driver = {
++        .name = "opt3001_int",
++        .of_match_table = opt3001_of_match,
++    },
++    .probe = opt3001_probe,
++    .remove = opt3001_remove,
++    .id_table = opt3001_id,
++};
++module_i2c_driver(opt3001_driver);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("yuji");
++MODULE_DESCRIPTION("OPT3001 Integer Lux Driver with On-Demand Read ×100");
++
++
++
++#endif
+\ No newline at end of file
+diff --git a/drivers/misc/dlpc3430.c b/drivers/misc/dlpc3430.c
+index 6a673e875..efe8ebbb2 100644
+--- a/drivers/misc/dlpc3430.c
++++ b/drivers/misc/dlpc3430.c
+@@ -58,7 +58,7 @@ static int dlpc3430_write(struct i2c_client *client, u8 *data, int len)
+ 
+ }
+ 
+-#if 1
++#if 0
+ static int dlpc3430_read(struct i2c_client *client, u8 reg, u8 *val, int len)
+ {
+     int ret = 0;
+@@ -91,27 +91,27 @@ static int dlpc3430_read(struct i2c_client *client, u8 reg, u8 *val, int len)
+ 
+ static void dlpc3430_hw_on(struct dlpc3430_data *data)
+ {
+-    struct device *dev = &data->client->dev;
+-    u8 reg_value = 0xff;
+-
+-    gpiod_set_value_cansleep(data->proj_on_gpio, 1);
+-    msleep(1500);
++    //struct device *dev = &data->client->dev;
++    //u8 reg_value = 0xff;
+ 
+-    dev_info(dev, "dlpc3430_hw_on proj_on_gpio output direction: %d\n", gpiod_get_direction(data->proj_on_gpio));
+-    dev_info(dev, "dlpc3430_hw_on proj_on_gpio value: %d\n", gpiod_get_value_cansleep(data->proj_on_gpio));
+ 
+-    dlpc3430_read(data->client, 0x53, &reg_value, 1);
+-
+-    dev_info(dev, "dlpc3430 0x53 reg  value: %x\n", reg_value);
++    // gpiod_set_value_cansleep(data->proj_on_gpio, 1);
++    // msleep(1500);
++    // dev_info(dev, "dlpc3430_hw_on proj_on_gpio output direction: %d\n", gpiod_get_direction(data->proj_on_gpio));
++    // dev_info(dev, "dlpc3430_hw_on proj_on_gpio value: %d\n", gpiod_get_value_cansleep(data->proj_on_gpio));
++    u8 cmd[2] = { 0x52, 0x07 };
++    dlpc3430_write(data->client, cmd, 2);
+ }
+ 
+ static void dlpc3430_hw_off(struct dlpc3430_data *data)
+ {
+-    struct device *dev = &data->client->dev;
+-    gpiod_set_value_cansleep(data->proj_on_gpio, 0);
++    // struct device *dev = &data->client->dev;
++     //gpiod_set_value_cansleep(data->proj_on_gpio, 0);
+ 
+-    dev_info(dev, "dlpc3430_hw_off proj_on_gpio output direction: %d\n", gpiod_get_direction(data->proj_on_gpio));
+-    dev_info(dev, "dlpc3430_hw_off proj_on_gpio value: %d\n", gpiod_get_value_cansleep(data->proj_on_gpio));
++    // dev_info(dev, "dlpc3430_hw_off proj_on_gpio output direction: %d\n", gpiod_get_direction(data->proj_on_gpio));
++    // dev_info(dev, "dlpc3430_hw_off proj_on_gpio value: %d\n", gpiod_get_value_cansleep(data->proj_on_gpio));
++    u8 cmd[2] = { 0x52, 0x00 };
++    dlpc3430_write(data->client, cmd, 2);
+ }
+ 
+ static void dlpc3430_set_brightness(struct dlpc3430_data *data, int brightness)
+@@ -131,6 +131,8 @@ static void dlpc3430_set_brightness(struct dlpc3430_data *data, int brightness)
+ 
+ static int dlpc3430_open(struct inode *inode, struct file *file)
+ {
++    gpiod_set_value_cansleep(g_dlpc3430->proj_on_gpio, 1);
++    msleep(1000);
+     file->private_data = g_dlpc3430;
+     return 0;
+ }
+@@ -265,9 +267,11 @@ static int dlpc3430_probe(struct i2c_client *client, const struct i2c_device_id
+     i2c_set_clientdata(client, g_dlpc3430);
+ 
+ 
+-    dlpc3430_hw_on(g_dlpc3430);
+-    dlpc3430_reg_init(g_dlpc3430->client);
+-    dlpc3430_set_brightness(g_dlpc3430, 200);
++    // gpiod_set_value_cansleep(g_dlpc3430->proj_on_gpio, 1);
++    // msleep(1000);
++
++    // dlpc3430_reg_init(g_dlpc3430->client);
++    // dlpc3430_set_brightness(g_dlpc3430, 200);
+ 
+     dev_info(dev, "dlpc3430 probe successs!\n");
+     return 0;
+diff --git a/drivers/power/supply/cw2015_battery.c b/drivers/power/supply/cw2015_battery.c
+index d357163ce..df57a1480 100644
+--- a/drivers/power/supply/cw2015_battery.c
++++ b/drivers/power/supply/cw2015_battery.c
+@@ -24,7 +24,7 @@
+ 
+ #include <linux/power/cw2015_battery.h>
+ 
+-static int dbg_enable;
++static int dbg_enable = 1;
+ module_param_named(dbg_level, dbg_enable, int, 0644);
+ 
+ #define cw_printk(args...) \
+@@ -196,6 +196,7 @@ static int cw_init(struct cw_battery *cw_bat)
+ 	return 0;
+ }
+ 
++#if 0
+ static int check_chrg_usb_psy(struct device *dev, void *data)
+ {
+ 	struct power_supply *psy = dev_get_drvdata(dev);
+@@ -208,6 +209,7 @@ static int check_chrg_usb_psy(struct device *dev, void *data)
+ 	return 0;
+ }
+ 
++
+ static int check_chrg_ac_psy(struct device *dev, void *data)
+ {
+ 	struct power_supply *psy = dev_get_drvdata(dev);
+@@ -230,6 +232,7 @@ static void get_chrg_psy(struct cw_battery *cw_bat)
+ 				      check_chrg_ac_psy);
+ }
+ 
++
+ static int get_charge_state(struct cw_battery *cw_bat)
+ {
+ 	union power_supply_propval val;
+@@ -269,6 +272,20 @@ static int get_charge_state(struct cw_battery *cw_bat)
+ 
+ 	return 0;
+ }
++#else
++static int get_charge_state(struct cw_battery *cw_bat)
++{
++	int usb_online = 0;
++
++	usb_online = cw_bat->charge_status;
++
++	cw_printk("usb_online = %d\n",  usb_online);
++	if (usb_online)
++		return 1;
++
++	return 0;
++}
++#endif
+ 
+ static int cw_por(struct cw_battery *cw_bat)
+ {
+@@ -521,6 +538,34 @@ static void cw_update_vol(struct cw_battery *cw_bat)
+ 		cw_bat->voltage = ret;
+ }
+ 
++static ssize_t charge_status_show(struct device *dev,
++	struct device_attribute *attr, char *buf)
++{
++	struct power_supply *psy = dev_get_drvdata(dev);
++	struct cw_battery *cw_bat = power_supply_get_drvdata(psy);
++
++	return sprintf(buf, "%d\n", cw_bat->charge_status ? 1 : 0);
++}
++
++static ssize_t charge_status_store(struct device *dev,
++	struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct power_supply *psy = dev_get_drvdata(dev);
++	struct cw_battery *cw_bat = power_supply_get_drvdata(psy);
++	int val;
++
++	if (kstrtoint(buf, 10, &val) == 0) {
++		cw_bat->charge_status = (val != 0);
++		cw_bat->charger_mode = cw_bat->charge_status ? 1 : 0;
++		cw_bat->bat_change = 1;  // 触发 power_supply 状态更新
++	}
++
++	return count;
++}
++
++static DEVICE_ATTR_RW(charge_status);
++
++
+ static void cw_update_status(struct cw_battery *cw_bat)
+ {
+ 	int status;
+@@ -858,6 +903,8 @@ static int cw_bat_probe(struct i2c_client *client,
+ 	cw_bat->suspend_resume_mark = 0;
+ 	cw_bat->charger_mode = NO_CHARGING;
+ 	cw_bat->bat_change = 0;
++	cw_bat->charge_status = 0;
++	
+ 
+ 	ret = cw_init(cw_bat);
+ 	if (ret) {
+@@ -875,6 +922,8 @@ static int cw_bat_probe(struct i2c_client *client,
+ 		return -1;
+ 	}
+ 
++	device_create_file(&cw_bat->rk_bat->dev, &dev_attr_charge_status);
++
+ 	cw_bat->battery_workqueue = create_singlethread_workqueue("rk_battery");
+ 	INIT_DELAYED_WORK(&cw_bat->battery_delay_work, cw_bat_work);
+ 	queue_delayed_work(cw_bat->battery_workqueue,
+diff --git a/include/linux/power/cw2015_battery.h b/include/linux/power/cw2015_battery.h
+index 8e6b1fc7e..792419382 100644
+--- a/include/linux/power/cw2015_battery.h
++++ b/include/linux/power/cw2015_battery.h
+@@ -114,6 +114,7 @@ struct cw_battery {
+ 	int bat_change;
+ 	bool dual_battery;
+ 	int charge_count;
++	bool charge_status;
+ };
+ 
+ #endif
+-- 
+2.25.1
+

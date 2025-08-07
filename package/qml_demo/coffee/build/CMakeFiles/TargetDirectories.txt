@@ -1,0 +1,10 @@
+/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/coffee.dir
+/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/coffee_other_files.dir
+/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/coffee_qmlimportscan.dir
+/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/edit_cache.dir
+/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/rebuild_cache.dir
+/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/list_install_components.dir
+/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/install.dir
+/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/install/local.dir
+/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/install/strip.dir
+/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/coffee_autogen.dir

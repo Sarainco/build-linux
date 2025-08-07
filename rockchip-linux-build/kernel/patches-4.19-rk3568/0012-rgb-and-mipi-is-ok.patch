@@ -1,0 +1,264 @@
+From 99419ecba19c7ad3c8aa98fcd24d4493334d4d1e Mon Sep 17 00:00:00 2001
+From: yuji <yujibuzailai_sun@outlook.com>
+Date: Tue, 24 Jun 2025 19:38:34 +0800
+Subject: [PATCH] rgb and mipi is ok
+
+---
+ .../dts/rockchip/rk3568-atk-atompi-ca1.dts    | 15 +--
+ .../boot/dts/rockchip/rk3568-pinctrl.dtsi     |  6 +-
+ drivers/misc/dlpc3430.c                       | 92 +++++++++++++++++--
+ 3 files changed, 93 insertions(+), 20 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
+index afd908b6b..4d3623d75 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
+@@ -173,7 +173,7 @@
+ 				hsync-active = <1>;
+ 				vsync-active = <1>;
+ 				de-active = <1>;
+-				pixelclk-active = <1>;
++				pixelclk-active = <0>;
+ 			};
+ 		};
+ 
+@@ -198,7 +198,7 @@
+ 
+ 	irled: irled {
+ 		compatible = "pwm-backlight";
+-		status = "okay";
++		status = "disabled";
+ 		pwms = <&pwm9 0 25000 0>;
+ 		brightness-levels = <
+ 			  0  20  20  21  21  22  22  23
+@@ -293,11 +293,11 @@
+ };
+ 
+ &pwm8 {
+-	status = "okay";
++	status = "disabled";
+ };
+ 
+ &pwm9 {
+-	status = "okay";
++	status = "disabled";
+ };
+ 
+ &soc_thermal {
+@@ -668,7 +668,7 @@
+ };
+ 
+ &rgb {
+-	status = "disabled";
++	status = "okay";
+ 
+ 	ports {
+ 		#address-cells = <1>;
+@@ -713,10 +713,11 @@
+ &i2c2 {
+ 	status = "okay";
+ 
+-	dlpc3430: dlpc3430@36 {
++	dlpc3430: dlpc3430@1b {
+ 		compatible = "ti,dlpc3430";
+-		reg = <0x36>;
++		reg = <0x1b>;
+ 		proj-on-gpios = <&gpio2 RK_PD1 GPIO_ACTIVE_HIGH>;
++		pwr-on-gpios = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>;
+ 	};
+ 
+ };
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi b/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
+index 347197d7f..3173e5282 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
+@@ -1390,7 +1390,7 @@
+ 				/* lcdc_d0 */
+ 				<2 RK_PD0 1 &pcfg_pull_none>,
+ 				/* lcdc_d1 */
+-				<2 RK_PD1 1 &pcfg_pull_none>,
++				//<2 RK_PD1 1 &pcfg_pull_none>,
+ 				/* lcdc_d2 */
+ 				<2 RK_PD2 1 &pcfg_pull_none>,
+ 				/* lcdc_d3 */
+@@ -1420,9 +1420,9 @@
+ 				/* lcdc_d15 */
+ 				<3 RK_PB0 1 &pcfg_pull_none>,
+ 				/* lcdc_d16 */
+-				<3 RK_PB1 1 &pcfg_pull_none>,
++				//<3 RK_PB1 1 &pcfg_pull_none>,
+ 				/* lcdc_d17 */
+-				<3 RK_PB2 1 &pcfg_pull_none>,
++				//<3 RK_PB2 1 &pcfg_pull_none>,
+ 				/* lcdc_d18 */
+ 				<3 RK_PB3 1 &pcfg_pull_none>,
+ 				/* lcdc_d19 */
+diff --git a/drivers/misc/dlpc3430.c b/drivers/misc/dlpc3430.c
+index f7a4cc1ce..a26628680 100644
+--- a/drivers/misc/dlpc3430.c
++++ b/drivers/misc/dlpc3430.c
+@@ -25,6 +25,7 @@
+ struct dlpc3430_data {
+     struct i2c_client *client;
+     struct gpio_desc *proj_on_gpio;
++    struct gpio_desc *pwr_on_gpio;
+     struct cdev cdev;
+     struct class *class;
+     struct device *dev;
+@@ -35,33 +36,82 @@ static struct dlpc3430_data *g_dlpc3430;
+ 
+ static int dlpc3430_write(struct i2c_client *client, u8 *data, int len)
+ {
++    int ret = 0;
++    int i;
+     struct i2c_msg msg = {
+         .addr = client->addr,
+         .flags = 0,
+         .len = len,
+         .buf = data,
+     };
+-    return i2c_transfer(client->adapter, &msg, 1);
++    ret = i2c_transfer(client->adapter, &msg, 1);
++
++    dev_info(&client->dev, "i2c write: addr=0x%02x, len=%d, data=", client->addr, len);
++    for (i = 0; i < len; i++)
++        pr_cont("0x%02x ", data[i]);
++    pr_cont(", ret=%d\n", ret);
++
++    if (ret < 0)
++        dev_err(&client->dev, "i2c write failed: ret=%d\n", ret);
++
++    return ret;
++
+ }
+ 
++#if 1
++static int dlpc3430_read(struct i2c_client *client, u8 reg, u8 *val, int len)
++{
++    int ret = 0;
++    struct i2c_msg msgs[2];
++
++    msgs[0].addr = client->addr;
++    msgs[0].flags = 0; // 写
++    msgs[0].len = 1;
++    msgs[0].buf = &reg;
++
++    msgs[1].addr = client->addr;
++    msgs[1].flags = I2C_M_RD; // 读
++    msgs[1].len = len;
++    msgs[1].buf = val;
++
++    ret = i2c_transfer(client->adapter, msgs, 2);
++
++    
++    if (ret != 2) {
++        dev_err(&client->dev, "i2c read failed: reg=0x%02x, ret=%d\n", reg, ret);
++        return (ret < 0) ? ret : -EIO;
++    }
++
++    dev_info(&client->dev, "i2c read: addr=0x%02x, reg=0x%02x, len=%d, val=0x%02x\n",
++             client->addr, reg, len, *val);
++
++    return 0;
++}
++#endif
++
+ static void dlpc3430_hw_on(struct dlpc3430_data *data)
+ {
+-    u8 cmd[2] = { 0x52, 0x07 };
++    struct device *dev = &data->client->dev;
++    u8 reg_value = 0xff;
+ 
+-    gpiod_set_value_cansleep(data->proj_on_gpio, 0);
+-    msleep(1000);
+     gpiod_set_value_cansleep(data->proj_on_gpio, 1);
+-    msleep(2000);
++    msleep(1500);
++
++    dev_info(dev, "dlpc3430_hw_on proj_on_gpio output direction: %d\n", gpiod_get_direction(data->proj_on_gpio));
++    dev_info(dev, "dlpc3430_hw_on proj_on_gpio value: %d\n", gpiod_get_value_cansleep(data->proj_on_gpio));
+ 
+-    dlpc3430_write(data->client, cmd, 2);
++    dlpc3430_read(data->client, 0x53, &reg_value, 1);
++
++    dev_info(dev, "dlpc3430 0x53 reg  value: %x\n", reg_value);
+ }
+ 
+ static void dlpc3430_hw_off(struct dlpc3430_data *data)
+ {
+-    u8 cmd[2] = { 0x52, 0x00 };
+-    dlpc3430_write(data->client, cmd, 2);
+-
++    struct device *dev = &data->client->dev;
+     gpiod_set_value_cansleep(data->proj_on_gpio, 0);
++
++    dev_info(dev, "dlpc3430_hw_off proj_on_gpio output direction: %d\n", gpiod_get_direction(data->proj_on_gpio));
++    dev_info(dev, "dlpc3430_hw_off proj_on_gpio value: %d\n", gpiod_get_value_cansleep(data->proj_on_gpio));
+ }
+ 
+ static void dlpc3430_set_brightness(struct dlpc3430_data *data, int brightness)
+@@ -159,6 +209,7 @@ static int dlpc3430_probe(struct i2c_client *client, const struct i2c_device_id
+     int ret;
+     dev_t devt;
+     struct device *device;
++    struct device *dev = &client->dev;
+ 
+     g_dlpc3430 = devm_kzalloc(&client->dev, sizeof(*g_dlpc3430), GFP_KERNEL);
+     if (!g_dlpc3430)
+@@ -167,12 +218,24 @@ static int dlpc3430_probe(struct i2c_client *client, const struct i2c_device_id
+     g_dlpc3430->client = client;
+     mutex_init(&g_dlpc3430->lock);
+ 
++#if 1
++    g_dlpc3430->pwr_on_gpio = devm_gpiod_get(&client->dev, "pwr-on", GPIOD_OUT_HIGH);
++    if (IS_ERR(g_dlpc3430->pwr_on_gpio)) {
++        dev_err(&client->dev, "Failed to get pwr_on gpio\n");
++        return PTR_ERR(g_dlpc3430->pwr_on_gpio);
++    }
++
++    //usleep_range(500*1000, 1000*1000);
++    
+     g_dlpc3430->proj_on_gpio = devm_gpiod_get(&client->dev, "proj-on", GPIOD_OUT_LOW);
+     if (IS_ERR(g_dlpc3430->proj_on_gpio)) {
+         dev_err(&client->dev, "Failed to get proj_on gpio\n");
+         return PTR_ERR(g_dlpc3430->proj_on_gpio);
+     }
+ 
++    //usleep_range(500*1000, 1000*1000);
++
++#endif
+     ret = alloc_chrdev_region(&devt, 0, 1, DLPC3430_NAME);
+     if (ret)
+         return ret;
+@@ -197,6 +260,13 @@ static int dlpc3430_probe(struct i2c_client *client, const struct i2c_device_id
+ 
+     g_dlpc3430->dev = device;
+     i2c_set_clientdata(client, g_dlpc3430);
++
++
++    dlpc3430_hw_on(g_dlpc3430);
++    dlpc3430_reg_init(g_dlpc3430->client);
++    dlpc3430_set_brightness(g_dlpc3430, 200);
++
++    dev_info(dev, "dlpc3430 probe successs!\n");
+     return 0;
+ 
+ err_class_destroy:
+@@ -215,11 +285,13 @@ static int dlpc3430_remove(struct i2c_client *client)
+     class_destroy(g_dlpc3430->class);
+     cdev_del(&g_dlpc3430->cdev);
+     unregister_chrdev_region(devt, 1);
++
++    dlpc3430_hw_off(g_dlpc3430);
+     return 0;
+ }
+ 
+ static const struct of_device_id dlpc3430_of_match[] = {
+-    { .compatible = "vs,dlpc3430" },
++    { .compatible = "ti,dlpc3430" },
+     { }
+ };
+ MODULE_DEVICE_TABLE(of, dlpc3430_of_match);
+-- 
+2.25.1
+

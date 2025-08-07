@@ -1,0 +1,185 @@
+From 79282b45bbf0cf50f7b210798ee6973e1985614f Mon Sep 17 00:00:00 2001
+From: yuji <yujibuzailai_sun@outlook.com>
+Date: Sat, 5 Jul 2025 11:34:20 +0800
+Subject: [PATCH] drv260x open stop api
+
+---
+ .../dts/rockchip/rk3568-atk-atompi-ca1.dts    | 22 +++---
+ drivers/gpu/drm/rockchip/dw-mipi-dsi.c        |  2 +
+ drivers/input/misc/drv260x.c                  | 76 ++++++++++++++-----
+ 3 files changed, 69 insertions(+), 31 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
+index 6d1243c3d..c80c6ea57 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3568-atk-atompi-ca1.dts
+@@ -69,12 +69,12 @@
+ 		autorepeat;
+ 
+ 
+-		power_key {
+-			label = "Key Power";
+-			gpios = <&gpio3 RK_PB1 GPIO_ACTIVE_HIGH>;
+-			linux,code = <KEY_POWER>;//116
+-			debounce-interval = <20>;
+-		};
++		// power_key {
++		// 	label = "Key Power";
++		// 	gpios = <&gpio3 RK_PB1 GPIO_ACTIVE_HIGH>;
++		// 	linux,code = <KEY_POWER>;//116
++		// 	debounce-interval = <20>;
++		// };
+ 
+ 		up_key {
+ 			label = "Key Up";
+@@ -109,9 +109,9 @@
+ 		compatible = "pwm-backlight";
+ 		status = "disabled";
+ 		//pwms = <&pwm5 0 25000 0>;
+-		pwms = <&pwm14 0 25000 0>;
++		pwms = <&pwm14 0 2000000 0>;
+ 		brightness-levels = <
+-			  0  20  20  21  21  22  22  23
++			  0  2  2  6  10  15  18  20
+ 			 23  24  24  25  25  26  26  27
+ 			 27  28  28  29  29  30  30  31
+ 			 31  32  32  33  33  34  34  35
+@@ -222,7 +222,7 @@
+ &gpio4 {
+ 	gpio-init-hog {
+ 		gpio-hog;
+-		gpios = <9 GPIO_ACTIVE_HIGH>, <11 GPIO_ACTIVE_HIGH>, <20 GPIO_ACTIVE_HIGH>, <0 GPIO_ACTIVE_HIGH>;
++		gpios = <9 GPIO_ACTIVE_HIGH>, <11 GPIO_ACTIVE_HIGH>, <20 GPIO_ACTIVE_HIGH>;
+ 		output-high;
+ 	};
+ };
+@@ -273,8 +273,8 @@
+ 		// enable-gpios = <&gpio4 RK_PB3 GPIO_ACTIVE_HIGH>;
+ 		// pwr-gpios = <&gpio4 RK_PB1 GPIO_ACTIVE_HIGH>;
+ 	    //reset-gpios = <&gpio4 RK_PC1 GPIO_ACTIVE_LOW>;
+-        prepare-delay-ms = <200>;     // 复位拉高后等待1ms
+-        reset-delay-ms = <200>;      // 复位拉低持续10ms
++        prepare-delay-ms = <1>;     // 复位拉高后等待1ms
++        reset-delay-ms = <10>;      // 复位拉低持续10ms
+         init-delay-ms = <120>;      // 复位释放后等待120ms
+         disable-delay-ms = <10>;    // 关闭显示后延时10ms
+         unprepare-delay-ms = <120>; // 断电前等待120ms
+diff --git a/drivers/gpu/drm/rockchip/dw-mipi-dsi.c b/drivers/gpu/drm/rockchip/dw-mipi-dsi.c
+index c2d7db8fd..a725c436e 100644
+--- a/drivers/gpu/drm/rockchip/dw-mipi-dsi.c
++++ b/drivers/gpu/drm/rockchip/dw-mipi-dsi.c
+@@ -1603,6 +1603,8 @@ static int dw_mipi_dsi_bind(struct device *dev, struct device *master,
+ 		dsi->sub_dev.of_node = dev->of_node;
+ 		rockchip_drm_register_sub_dev(&dsi->sub_dev);
+ 		drm_object_attach_property(&connector->base, private->connector_id_prop, 0);
++
++		//todo
+ 	} else {
+ 		dsi->bridge->driver_private = &dsi->host;
+ 		dsi->bridge->encoder = encoder;
+diff --git a/drivers/input/misc/drv260x.c b/drivers/input/misc/drv260x.c
+index 22c461113..bc27e9ed0 100644
+--- a/drivers/input/misc/drv260x.c
++++ b/drivers/input/misc/drv260x.c
+@@ -22,6 +22,8 @@ struct drv260x_play_req {
+ };
+ 
+ #define DRV260X_IOC_PLAY _IOW(DRV260X_MAGIC, 0x01, struct drv260x_play_req)
++#define DRV260X_IOC_START _IOW(DRV260X_MAGIC, 0x02, __u8)  // 强度
++#define DRV260X_IOC_STOP  _IO(DRV260X_MAGIC,  0x03)        // 无参数
+ 
+ static dev_t drv260x_devno;
+ static struct cdev drv260x_cdev;
+@@ -65,35 +67,69 @@ static int drv260x_hw_self_test(struct i2c_client *client)
+ #endif
+ static long drv260x_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ {
+-    struct drv260x_play_req req;
+     struct drv260x_data *data = g_drv260x;
+     struct i2c_client *client = data->client;
+-
+-    if (cmd != DRV260X_IOC_PLAY)
+-        return -ENOTTY;
+-
+-    if (copy_from_user(&req, (void __user *)arg, sizeof(req)))
+-        return -EFAULT;
+-
+-    if (req.strength > 127 || req.duration_ms == 0)
+-        return -EINVAL;
++    int ret = 0;
++    __u8 strength;
+ 
+     mutex_lock(&data->lock);
+ 
+-    drv260x_write_reg(client, 0x01, 0x05);      // MODE = RTP
+-    drv260x_write_reg(client, 0x1a, 0x00);      // ERM 模式
+-    drv260x_write_reg(client, 0x02, req.strength);
+-    drv260x_write_reg(client, 0x0c, 0x01);      // GO = 1
+-
+-    msleep(req.duration_ms);
+-
+-    drv260x_write_reg(client, 0x02, 0x00);      // 停止
+-    drv260x_write_reg(client, 0x0c, 0x01);      // GO = 1
++    switch (cmd) {
++    case DRV260X_IOC_PLAY: {
++        struct drv260x_play_req req;
++        if (copy_from_user(&req, (void __user *)arg, sizeof(req))) {
++            ret = -EFAULT;
++            break;
++        }
++
++        if (req.strength > 127 || req.duration_ms == 0) {
++            ret = -EINVAL;
++            break;
++        }
++
++        drv260x_write_reg(client, 0x01, 0x05);    // RTP 模式
++        drv260x_write_reg(client, 0x1a, 0x00);    // ERM 模式
++        drv260x_write_reg(client, 0x02, req.strength);
++        drv260x_write_reg(client, 0x0c, 0x01);    // GO = 1
++
++        msleep(req.duration_ms);
++
++        drv260x_write_reg(client, 0x02, 0x00);    // 停止
++        drv260x_write_reg(client, 0x0c, 0x01);
++        break;
++    }
++    case DRV260X_IOC_START:
++        if (copy_from_user(&strength, (void __user *)arg, sizeof(__u8))) {
++            ret = -EFAULT;
++            break;
++        }
++
++        if (strength > 127) {
++            ret = -EINVAL;
++            break;
++        }
++
++        drv260x_write_reg(client, 0x01, 0x05);    // RTP 模式
++        drv260x_write_reg(client, 0x1a, 0x00);    // ERM 模式
++        drv260x_write_reg(client, 0x02, strength);
++        drv260x_write_reg(client, 0x0c, 0x01);    // GO = 1
++        break;
++
++    case DRV260X_IOC_STOP:
++        drv260x_write_reg(client, 0x02, 0x00);    // 清除强度
++        drv260x_write_reg(client, 0x0c, 0x01);    // GO = 1，停止动作
++        break;
++
++    default:
++        ret = -ENOTTY;
++        break;
++    }
+ 
+     mutex_unlock(&data->lock);
+-    return 0;
++    return ret;
+ }
+ 
++
+ static int drv260x_open(struct inode *inode, struct file *file)
+ {
+     return 0;
+-- 
+2.25.1
+

@@ -1,0 +1,360 @@
+The target system is: Linux -  - arm
+The host system is: Linux - 6.8.0-60-generic - x86_64
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++ 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+
+The CXX compiler identification is GNU, found in "/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/3.22.1/CompilerIdCXX/a.out"
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_ffdcc/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_ffdcc.dir/build.make CMakeFiles/cmTC_ffdcc.dir/build
+gmake[1]: Entering directory '/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_ffdcc.dir/CMakeCXXCompilerABI.cpp.o
+/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++ --sysroot=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot   -v -o CMakeFiles/cmTC_ffdcc.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp
+Using built-in specs.
+COLLECT_GCC=/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++.br_real
+Target: aarch64-buildroot-linux-gnu
+Configured with: ./configure --prefix=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host --sysconfdir=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host/etc --enable-static --target=aarch64-buildroot-linux-gnu --with-sysroot=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host/aarch64-buildroot-linux-gnu/sysroot --enable-__cxa_atexit --with-gnu-ld --disable-libssp --disable-multilib --disable-decimal-float --with-gmp=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host --with-mpc=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host --with-mpfr=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host --with-pkgversion='Buildroot 2018.02-rc3-g30e3a128' --with-bugurl=http://bugs.buildroot.net/ --without-zstd --disable-libquadmath --disable-libquadmath-support --enable-tls --enable-threads --without-isl --without-cloog --with-abi=lp64 --with-cpu=cortex-a55 --enable-languages=c,c++ --with-build-time-tools=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host/aarch64-buildroot-linux-gnu/bin --enable-shared --disable-libgomp
+Thread model: posix
+Supported LTO compression algorithms: zlib
+gcc version 10.3.0 (Buildroot 2018.02-rc3-g30e3a128) 
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_ffdcc.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mcpu=cortex-a55' '-mlittle-endian' '-mabi=lp64'
+ /home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/10.3.0/cc1plus -quiet -v -iprefix /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/ -isysroot /home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot -D_GNU_SOURCE /usr/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mcpu=cortex-a55 -mlittle-endian -mabi=lp64 -auxbase-strip CMakeFiles/cmTC_ffdcc.dir/CMakeCXXCompilerABI.cpp.o -version -o /tmp/ccYpYDlJ.s
+GNU C++14 (Buildroot 2018.02-rc3-g30e3a128) version 10.3.0 (aarch64-buildroot-linux-gnu)
+	compiled by GNU C version 7.5.0, GMP version 6.1.2, MPFR version 3.1.6, MPC version 1.0.3, isl version none
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring duplicate directory "/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/../../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include/c++/10.3.0"
+ignoring duplicate directory "/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/../../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include/c++/10.3.0/aarch64-buildroot-linux-gnu"
+ignoring duplicate directory "/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/../../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include/c++/10.3.0/backward"
+ignoring duplicate directory "/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/../../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/include"
+ignoring nonexistent directory "/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/local/include"
+ignoring duplicate directory "/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/../../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/include-fixed"
+ignoring duplicate directory "/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/../../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include/c++/10.3.0
+ /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include/c++/10.3.0/aarch64-buildroot-linux-gnu
+ /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include/c++/10.3.0/backward
+ /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/include
+ /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/include-fixed
+ /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include
+ /home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/include
+End of search list.
+GNU C++14 (Buildroot 2018.02-rc3-g30e3a128) version 10.3.0 (aarch64-buildroot-linux-gnu)
+	compiled by GNU C version 7.5.0, GMP version 6.1.2, MPFR version 3.1.6, MPC version 1.0.3, isl version none
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: ea1fe0c19fa0b7e4225b5779b5fd59ff
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_ffdcc.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mcpu=cortex-a55' '-mlittle-endian' '-mabi=lp64'
+ /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/bin/as -v -EL -march=armv8.2-a+fp16+rcpc+dotprod -mabi=lp64 -o CMakeFiles/cmTC_ffdcc.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccYpYDlJ.s
+GNU assembler version 2.36.1 (aarch64-buildroot-linux-gnu) using BFD version (GNU Binutils) 2.36.1
+COMPILER_PATH=/home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/10.3.0/:/home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/:/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/bin/
+LIBRARY_PATH=/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/:/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/:/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/lib/../lib64/:/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib/../lib64/:/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64/:/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/lib/:/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib/:/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_ffdcc.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mcpu=cortex-a55' '-mlittle-endian' '-mabi=lp64'
+Linking CXX executable cmTC_ffdcc
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ffdcc.dir/link.txt --verbose=1
+/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++ --sysroot=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot -Wl,-rpath-link=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -L %TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -lmali_hook -Wl,--whole-archive -lmali_hook_injector -Wl,--no-whole-archive -v CMakeFiles/cmTC_ffdcc.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_ffdcc 
+Using built-in specs.
+COLLECT_GCC=/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++.br_real
+COLLECT_LTO_WRAPPER=/home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/10.3.0/lto-wrapper
+Target: aarch64-buildroot-linux-gnu
+Configured with: ./configure --prefix=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host --sysconfdir=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host/etc --enable-static --target=aarch64-buildroot-linux-gnu --with-sysroot=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host/aarch64-buildroot-linux-gnu/sysroot --enable-__cxa_atexit --with-gnu-ld --disable-libssp --disable-multilib --disable-decimal-float --with-gmp=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host --with-mpc=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host --with-mpfr=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host --with-pkgversion='Buildroot 2018.02-rc3-g30e3a128' --with-bugurl=http://bugs.buildroot.net/ --without-zstd --disable-libquadmath --disable-libquadmath-support --enable-tls --enable-threads --without-isl --without-cloog --with-abi=lp64 --with-cpu=cortex-a55 --enable-languages=c,c++ --with-build-time-tools=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host/aarch64-buildroot-linux-gnu/bin --enable-shared --disable-libgomp
+Thread model: posix
+Supported LTO compression algorithms: zlib
+gcc version 10.3.0 (Buildroot 2018.02-rc3-g30e3a128) 
+COMPILER_PATH=/home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/10.3.0/:/home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/:/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/bin/
+LIBRARY_PATH=/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/:/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/:/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/lib/../lib64/:/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib/../lib64/:/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64/:/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/lib/:/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib/:/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/
+COLLECT_GCC_OPTIONS='-L%TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot/usr/lib/' '-v' '-o' 'cmTC_ffdcc' '-shared-libgcc' '-mcpu=cortex-a55' '-mlittle-endian' '-mabi=lp64'
+ /home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/10.3.0/collect2 -plugin /home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/10.3.0/liblto_plugin.so -plugin-opt=/home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/10.3.0/lto-wrapper -plugin-opt=-fresolution=/tmp/cc339rpv.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot --eh-frame-hdr -dynamic-linker /lib/ld-linux-aarch64.so.1 -X -EL -maarch64linux -o cmTC_ffdcc /home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64/crt1.o /home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64/crti.o /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/crtbegin.o -L%TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -L/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0 -L/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc -L/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/lib/../lib64 -L/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib/../lib64 -L/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64 -L/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/lib -L/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib -L/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib -rpath-link=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -lmali_hook --whole-archive -lmali_hook_injector --no-whole-archive CMakeFiles/cmTC_ffdcc.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/crtend.o /home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64/crtn.o
+COLLECT_GCC_OPTIONS='-L%TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot/usr/lib/' '-v' '-o' 'cmTC_ffdcc' '-shared-libgcc' '-mcpu=cortex-a55' '-mlittle-endian' '-mabi=lp64'
+gmake[1]: Leaving directory '/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp'
+
+
+
+Parsed CXX implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include/c++/10.3.0]
+    add: [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include/c++/10.3.0/aarch64-buildroot-linux-gnu]
+    add: [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include/c++/10.3.0/backward]
+    add: [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/include]
+    add: [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/include-fixed]
+    add: [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include]
+    add: [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/include]
+  end of search list found
+  collapse include dir [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include/c++/10.3.0] ==> [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/include/c++/10.3.0]
+  collapse include dir [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include/c++/10.3.0/aarch64-buildroot-linux-gnu] ==> [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/include/c++/10.3.0/aarch64-buildroot-linux-gnu]
+  collapse include dir [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include/c++/10.3.0/backward] ==> [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/include/c++/10.3.0/backward]
+  collapse include dir [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/include] ==> [/home/sunao/toolchain/toolchain-rk3568/lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/include]
+  collapse include dir [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/include-fixed] ==> [/home/sunao/toolchain/toolchain-rk3568/lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/include-fixed]
+  collapse include dir [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include] ==> [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/include]
+  collapse include dir [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/include] ==> [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/include]
+  implicit include dirs: [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/include/c++/10.3.0;/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/include/c++/10.3.0/aarch64-buildroot-linux-gnu;/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/include/c++/10.3.0/backward;/home/sunao/toolchain/toolchain-rk3568/lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/include;/home/sunao/toolchain/toolchain-rk3568/lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/include-fixed;/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/include;/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/include]
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(aarch64-buildroot-linux-gnu-ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_ffdcc/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_ffdcc.dir/build.make CMakeFiles/cmTC_ffdcc.dir/build]
+  ignore line: [gmake[1]: Entering directory '/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp']
+  ignore line: [Building CXX object CMakeFiles/cmTC_ffdcc.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++ --sysroot=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot   -v -o CMakeFiles/cmTC_ffdcc.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++.br_real]
+  ignore line: [Target: aarch64-buildroot-linux-gnu]
+  ignore line: [Configured with: ./configure --prefix=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host --sysconfdir=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host/etc --enable-static --target=aarch64-buildroot-linux-gnu --with-sysroot=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host/aarch64-buildroot-linux-gnu/sysroot --enable-__cxa_atexit --with-gnu-ld --disable-libssp --disable-multilib --disable-decimal-float --with-gmp=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host --with-mpc=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host --with-mpfr=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host --with-pkgversion='Buildroot 2018.02-rc3-g30e3a128' --with-bugurl=http://bugs.buildroot.net/ --without-zstd --disable-libquadmath --disable-libquadmath-support --enable-tls --enable-threads --without-isl --without-cloog --with-abi=lp64 --with-cpu=cortex-a55 --enable-languages=c,c++ --with-build-time-tools=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host/aarch64-buildroot-linux-gnu/bin --enable-shared --disable-libgomp]
+  ignore line: [Thread model: posix]
+  ignore line: [Supported LTO compression algorithms: zlib]
+  ignore line: [gcc version 10.3.0 (Buildroot 2018.02-rc3-g30e3a128) ]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_ffdcc.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mcpu=cortex-a55' '-mlittle-endian' '-mabi=lp64']
+  ignore line: [ /home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/10.3.0/cc1plus -quiet -v -iprefix /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/ -isysroot /home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot -D_GNU_SOURCE /usr/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mcpu=cortex-a55 -mlittle-endian -mabi=lp64 -auxbase-strip CMakeFiles/cmTC_ffdcc.dir/CMakeCXXCompilerABI.cpp.o -version -o /tmp/ccYpYDlJ.s]
+  ignore line: [GNU C++14 (Buildroot 2018.02-rc3-g30e3a128) version 10.3.0 (aarch64-buildroot-linux-gnu)]
+  ignore line: [	compiled by GNU C version 7.5.0  GMP version 6.1.2  MPFR version 3.1.6  MPC version 1.0.3  isl version none]
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [ignoring duplicate directory "/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/../../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include/c++/10.3.0"]
+  ignore line: [ignoring duplicate directory "/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/../../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include/c++/10.3.0/aarch64-buildroot-linux-gnu"]
+  ignore line: [ignoring duplicate directory "/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/../../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include/c++/10.3.0/backward"]
+  ignore line: [ignoring duplicate directory "/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/../../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/include"]
+  ignore line: [ignoring nonexistent directory "/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/local/include"]
+  ignore line: [ignoring duplicate directory "/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/../../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/include-fixed"]
+  ignore line: [ignoring duplicate directory "/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/../../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include"]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include/c++/10.3.0]
+  ignore line: [ /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include/c++/10.3.0/aarch64-buildroot-linux-gnu]
+  ignore line: [ /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include/c++/10.3.0/backward]
+  ignore line: [ /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/include]
+  ignore line: [ /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/include-fixed]
+  ignore line: [ /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/include]
+  ignore line: [ /home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/include]
+  ignore line: [End of search list.]
+  ignore line: [GNU C++14 (Buildroot 2018.02-rc3-g30e3a128) version 10.3.0 (aarch64-buildroot-linux-gnu)]
+  ignore line: [	compiled by GNU C version 7.5.0  GMP version 6.1.2  MPFR version 3.1.6  MPC version 1.0.3  isl version none]
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [Compiler executable checksum: ea1fe0c19fa0b7e4225b5779b5fd59ff]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_ffdcc.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mcpu=cortex-a55' '-mlittle-endian' '-mabi=lp64']
+  ignore line: [ /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/bin/as -v -EL -march=armv8.2-a+fp16+rcpc+dotprod -mabi=lp64 -o CMakeFiles/cmTC_ffdcc.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccYpYDlJ.s]
+  ignore line: [GNU assembler version 2.36.1 (aarch64-buildroot-linux-gnu) using BFD version (GNU Binutils) 2.36.1]
+  ignore line: [COMPILER_PATH=/home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/10.3.0/:/home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/:/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/bin/]
+  ignore line: [LIBRARY_PATH=/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/:/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/:/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/lib/../lib64/:/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib/../lib64/:/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64/:/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/lib/:/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib/:/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_ffdcc.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mcpu=cortex-a55' '-mlittle-endian' '-mabi=lp64']
+  ignore line: [Linking CXX executable cmTC_ffdcc]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ffdcc.dir/link.txt --verbose=1]
+  ignore line: [/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++ --sysroot=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot -Wl -rpath-link=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -L %TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -lmali_hook -Wl --whole-archive -lmali_hook_injector -Wl --no-whole-archive -v CMakeFiles/cmTC_ffdcc.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_ffdcc ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++.br_real]
+  ignore line: [COLLECT_LTO_WRAPPER=/home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/10.3.0/lto-wrapper]
+  ignore line: [Target: aarch64-buildroot-linux-gnu]
+  ignore line: [Configured with: ./configure --prefix=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host --sysconfdir=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host/etc --enable-static --target=aarch64-buildroot-linux-gnu --with-sysroot=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host/aarch64-buildroot-linux-gnu/sysroot --enable-__cxa_atexit --with-gnu-ld --disable-libssp --disable-multilib --disable-decimal-float --with-gmp=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host --with-mpc=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host --with-mpfr=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host --with-pkgversion='Buildroot 2018.02-rc3-g30e3a128' --with-bugurl=http://bugs.buildroot.net/ --without-zstd --disable-libquadmath --disable-libquadmath-support --enable-tls --enable-threads --without-isl --without-cloog --with-abi=lp64 --with-cpu=cortex-a55 --enable-languages=c,c++ --with-build-time-tools=/home/alientek/ATK-DLRK3568/buildroot/output/rockchip_rk3568/host/aarch64-buildroot-linux-gnu/bin --enable-shared --disable-libgomp]
+  ignore line: [Thread model: posix]
+  ignore line: [Supported LTO compression algorithms: zlib]
+  ignore line: [gcc version 10.3.0 (Buildroot 2018.02-rc3-g30e3a128) ]
+  ignore line: [COMPILER_PATH=/home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/10.3.0/:/home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/:/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/bin/]
+  ignore line: [LIBRARY_PATH=/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/:/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/:/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/lib/../lib64/:/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib/../lib64/:/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64/:/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/lib/:/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib/:/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-L%TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot/usr/lib/' '-v' '-o' 'cmTC_ffdcc' '-shared-libgcc' '-mcpu=cortex-a55' '-mlittle-endian' '-mabi=lp64']
+  link line: [ /home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/10.3.0/collect2 -plugin /home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/10.3.0/liblto_plugin.so -plugin-opt=/home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/10.3.0/lto-wrapper -plugin-opt=-fresolution=/tmp/cc339rpv.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot --eh-frame-hdr -dynamic-linker /lib/ld-linux-aarch64.so.1 -X -EL -maarch64linux -o cmTC_ffdcc /home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64/crt1.o /home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64/crti.o /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/crtbegin.o -L%TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -L/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0 -L/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc -L/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/lib/../lib64 -L/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib/../lib64 -L/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64 -L/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/lib -L/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib -L/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib -rpath-link=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -lmali_hook --whole-archive -lmali_hook_injector --no-whole-archive CMakeFiles/cmTC_ffdcc.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/crtend.o /home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64/crtn.o]
+    arg [/home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/10.3.0/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/10.3.0/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/home/sunao/toolchain/toolchain-rk3568/bin/../libexec/gcc/aarch64-buildroot-linux-gnu/10.3.0/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/cc339rpv.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [--sysroot=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib/ld-linux-aarch64.so.1] ==> ignore
+    arg [-X] ==> ignore
+    arg [-EL] ==> ignore
+    arg [-maarch64linux] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_ffdcc] ==> ignore
+    arg [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64/crt1.o] ==> obj [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64/crt1.o]
+    arg [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64/crti.o] ==> obj [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64/crti.o]
+    arg [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/crtbegin.o] ==> obj [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/crtbegin.o]
+    arg [-L%TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot/usr/lib/] ==> ignore
+    arg [-L/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0] ==> dir [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0]
+    arg [-L/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc] ==> dir [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc]
+    arg [-L/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/lib/../lib64] ==> dir [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/lib/../lib64]
+    arg [-L/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib/../lib64] ==> dir [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib/../lib64]
+    arg [-L/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64] ==> dir [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64]
+    arg [-L/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/lib] ==> dir [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/lib]
+    arg [-L/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib] ==> dir [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib]
+    arg [-L/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib] ==> dir [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib]
+    arg [-rpath-link=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/] ==> ignore
+    arg [-lmali_hook] ==> lib [mali_hook]
+    arg [--whole-archive] ==> ignore
+    arg [-lmali_hook_injector] ==> lib [mali_hook_injector]
+    arg [--no-whole-archive] ==> ignore
+    arg [CMakeFiles/cmTC_ffdcc.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [-lstdc++] ==> lib [stdc++]
+    arg [-lm] ==> lib [m]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lc] ==> lib [c]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/crtend.o] ==> obj [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/crtend.o]
+    arg [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64/crtn.o] ==> obj [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64/crtn.o]
+  collapse obj [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64/crt1.o] ==> [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib64/crt1.o]
+  collapse obj [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64/crti.o] ==> [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib64/crti.o]
+  collapse obj [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/crtbegin.o] ==> [/home/sunao/toolchain/toolchain-rk3568/lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/crtbegin.o]
+  collapse obj [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/crtend.o] ==> [/home/sunao/toolchain/toolchain-rk3568/lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/crtend.o]
+  collapse obj [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64/crtn.o] ==> [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib64/crtn.o]
+  collapse library dir [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0] ==> [/home/sunao/toolchain/toolchain-rk3568/lib/gcc/aarch64-buildroot-linux-gnu/10.3.0]
+  collapse library dir [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc] ==> [/home/sunao/toolchain/toolchain-rk3568/lib/gcc]
+  collapse library dir [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/lib/../lib64] ==> [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/lib64]
+  collapse library dir [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib/../lib64] ==> [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib64]
+  collapse library dir [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/../lib64] ==> [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib64]
+  collapse library dir [/home/sunao/toolchain/toolchain-rk3568/bin/../lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/../../../../aarch64-buildroot-linux-gnu/lib] ==> [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/lib]
+  collapse library dir [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib] ==> [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib]
+  collapse library dir [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib] ==> [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib]
+  implicit libs: [mali_hook;mali_hook_injector;stdc++;m;gcc_s;gcc;c;gcc_s;gcc]
+  implicit objs: [/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib64/crt1.o;/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib64/crti.o;/home/sunao/toolchain/toolchain-rk3568/lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/crtbegin.o;/home/sunao/toolchain/toolchain-rk3568/lib/gcc/aarch64-buildroot-linux-gnu/10.3.0/crtend.o;/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib64/crtn.o]
+  implicit dirs: [/home/sunao/toolchain/toolchain-rk3568/lib/gcc/aarch64-buildroot-linux-gnu/10.3.0;/home/sunao/toolchain/toolchain-rk3568/lib/gcc;/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/lib64;/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib64;/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib64;/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/lib;/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/lib;/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib]
+  implicit fwks: []
+
+
+Determining if the include file pthread.h exists passed with the following output:
+Change Dir: /home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_5d3fd/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_5d3fd.dir/build.make CMakeFiles/cmTC_5d3fd.dir/build
+gmake[1]: 进入目录“/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp”
+Building CXX object CMakeFiles/cmTC_5d3fd.dir/CheckIncludeFile.cxx.o
+/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++ --sysroot=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot    -o CMakeFiles/cmTC_5d3fd.dir/CheckIncludeFile.cxx.o -c /home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp/CheckIncludeFile.cxx
+Linking CXX executable cmTC_5d3fd
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5d3fd.dir/link.txt --verbose=1
+/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++ --sysroot=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot -Wl,-rpath-link=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -L %TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -lmali_hook -Wl,--whole-archive -lmali_hook_injector -Wl,--no-whole-archive  CMakeFiles/cmTC_5d3fd.dir/CheckIncludeFile.cxx.o -o cmTC_5d3fd 
+gmake[1]: 离开目录“/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp”
+
+
+
+Performing C++ SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD succeeded with the following output:
+Change Dir: /home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_97496/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_97496.dir/build.make CMakeFiles/cmTC_97496.dir/build
+gmake[1]: 进入目录“/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp”
+Building CXX object CMakeFiles/cmTC_97496.dir/src.cxx.o
+/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++ --sysroot=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_97496.dir/src.cxx.o -c /home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_97496
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_97496.dir/link.txt --verbose=1
+/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++ --sysroot=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot -Wl,-rpath-link=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -L %TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -lmali_hook -Wl,--whole-archive -lmali_hook_injector -Wl,--no-whole-archive  CMakeFiles/cmTC_97496.dir/src.cxx.o -o cmTC_97496 
+gmake[1]: 离开目录“/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp”
+
+
+Source file was:
+#include <pthread.h>
+
+static void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
+Performing C++ SOURCE FILE Test HAVE_STDATOMIC succeeded with the following output:
+Change Dir: /home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_9f217/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_9f217.dir/build.make CMakeFiles/cmTC_9f217.dir/build
+gmake[1]: 进入目录“/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp”
+Building CXX object CMakeFiles/cmTC_9f217.dir/src.cxx.o
+/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++ --sysroot=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot -DHAVE_STDATOMIC   -o CMakeFiles/cmTC_9f217.dir/src.cxx.o -c /home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_9f217
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9f217.dir/link.txt --verbose=1
+/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++ --sysroot=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot -Wl,-rpath-link=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -L %TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -lmali_hook -Wl,--whole-archive -lmali_hook_injector -Wl,--no-whole-archive  CMakeFiles/cmTC_9f217.dir/src.cxx.o -o cmTC_9f217 
+gmake[1]: 离开目录“/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp”
+
+
+Source file was:
+#include <atomic>
+#include <cstdint>
+
+int main(int, char **)
+{
+    volatile std::atomic<char>    size_1;
+    volatile std::atomic<short>   size_2;
+    volatile std::atomic<int>     size_4;
+    volatile std::atomic<int64_t> size_8;
+
+    ++size_1;
+    ++size_2;
+    ++size_4;
+    ++size_8;
+
+    (void)size_1.load(std::memory_order_relaxed);
+    (void)size_2.load(std::memory_order_relaxed);
+    (void)size_4.load(std::memory_order_relaxed);
+    (void)size_8.load(std::memory_order_relaxed);
+
+    return 0;
+}
+Performing C++ SOURCE FILE Test HAVE_EGL succeeded with the following output:
+Change Dir: /home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_a1ae5/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_a1ae5.dir/build.make CMakeFiles/cmTC_a1ae5.dir/build
+gmake[1]: 进入目录“/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp”
+Building CXX object CMakeFiles/cmTC_a1ae5.dir/src.cxx.o
+/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++ --sysroot=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot -DHAVE_EGL   -o CMakeFiles/cmTC_a1ae5.dir/src.cxx.o -c /home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_a1ae5
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a1ae5.dir/link.txt --verbose=1
+/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++ --sysroot=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot -Wl,-rpath-link=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -L %TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -lmali_hook -Wl,--whole-archive -lmali_hook_injector -Wl,--no-whole-archive  CMakeFiles/cmTC_a1ae5.dir/src.cxx.o -o cmTC_a1ae5  /home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/libmali.so 
+gmake[1]: 离开目录“/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp”
+
+
+Source file was:
+
+#include <EGL/egl.h>
+
+int main(int, char **) {
+    EGLint x = 0; EGLDisplay dpy = 0; EGLContext ctx = 0;
+    eglDestroyContext(dpy, ctx);
+}
+Performing C++ SOURCE FILE Test HAVE_GLESv2 succeeded with the following output:
+Change Dir: /home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_5ead0/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_5ead0.dir/build.make CMakeFiles/cmTC_5ead0.dir/build
+gmake[1]: 进入目录“/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp”
+Building CXX object CMakeFiles/cmTC_5ead0.dir/src.cxx.o
+/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++ --sysroot=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot -DHAVE_GLESv2   -o CMakeFiles/cmTC_5ead0.dir/src.cxx.o -c /home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_5ead0
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5ead0.dir/link.txt --verbose=1
+/home/sunao/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-g++ --sysroot=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot -Wl,-rpath-link=/home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -L %TOOLCHAIN_DIR%/aarch64-buildroot-linux-gnu/sysroot/usr/lib/ -lmali_hook -Wl,--whole-archive -lmali_hook_injector -Wl,--no-whole-archive  CMakeFiles/cmTC_5ead0.dir/src.cxx.o -o cmTC_5ead0  /home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/libmali.so /home/sunao/toolchain/toolchain-rk3568/aarch64-buildroot-linux-gnu/sysroot/usr/lib/libmali.so 
+gmake[1]: 离开目录“/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/CMakeFiles/CMakeTmp”
+
+
+Source file was:
+
+#ifdef __APPLE__
+#  include <OpenGLES/ES2/gl.h>
+#else
+#  define GL_GLEXT_PROTOTYPES
+#  include <GLES2/gl2.h>
+#endif
+
+int main(int, char **) {
+    glUniform1f(1, GLfloat(1.0));
+    glClear(GL_COLOR_BUFFER_BIT);
+}

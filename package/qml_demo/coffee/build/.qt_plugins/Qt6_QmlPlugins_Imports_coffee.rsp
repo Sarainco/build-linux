@@ -1,0 +1,11 @@
+-rootPath
+/home/sunao/workspace/build-linux/package/qml_demo/coffee
+-cmake-output
+-output-file
+/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/.qt_plugins/Qt6_QmlPlugins_Imports_coffee.cmake
+-importPath
+/home/sunao/workspace/build-linux/package/qml_demo/coffee/build
+-importPath
+/home/sunao/workspace/build-linux/staging/build/qt-everywhere-src-6.4.3-install/./qml
+-qrcFiles
+/home/sunao/workspace/build-linux/package/qml_demo/coffee/build/.rcc/qml.qrc
