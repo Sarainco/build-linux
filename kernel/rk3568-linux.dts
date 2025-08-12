@@ -15,6 +15,22 @@
 		compatible = "atkrk3568-led";
 		status = ok;
 		reg = <>;
+	};
+
+	key {
+		compatible = "alientek,key";
+		pincrtl-0 = <&key_gpio>;
+		pinctrl-names = "default";
+		key-gpio = <&gpio3 RK_PC5 GPIO_ACTIVE_HIGH>;
+		status = "okay";
 	}
 }
 
+&pinctrl {
+	key-gpios {
+		key_gpio: key-pin {
+			rockchip,pins = 
+				<3 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+};
