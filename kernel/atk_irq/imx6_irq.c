@@ -61,19 +61,112 @@ struct imx6uirq_dev {
     atomic_t keyvalue;
     atomic_t releasekey;
     struct timer_list timer;
-    struct irq_keydesc irq_keydesc[KEY_NUM];
+    struct irq_keydesc irqkeydesc[KEY_NUM];
     unsigned char curkeynum;
 };
 
 struct imx6uirq_dev imx6uirq;
 
+static irqreturn_t key0_handler(int irq, void *dev_id)
+{
+    struct imx6uirq_dev *dev = (struct imx6uirq_dev *)dev_id;
+
+    dev->curkeynum = 0;
+    dev->timer.data = (volatile long)dev_id;
+    mod_timer(&dev->timer, jiffies + msecs_to_jiffies(10));
+
+    return IRQ_RETVAL(IRQ_HANDLED);
+}
+
+void timer_function(unsigned long arg)
+{
+    unsigned char value;
+    unsigned char num;
+    struct irq_keydesc *keydesc;
+    struct imx6uirq_dev *dev = (struct imx6uirq_dev *)arg;
+
+    num = dev->curkeynum;
+    keydesc = &dev->irqkeydesc[num];
+
+    value = gpio_get_value(keydesc->gpio);
+	if(value == 0){ 						/* 按下按键 */
+		atomic_set(&dev->keyvalue, keydesc->value);
+	} else {/* 按键松开 */
+		atomic_set(&dev->keyvalue, 0x80 | keydesc->value);
+		atomic_set(&dev->releasekey, 1);	/* 标记松开按键，即完成一次完整的按键过程 */			
+	}	
+}
+
+static int keyio_init()
+{
+    unsigned char i = 0;
+    int ret = 0;
+
+    imx6uirq.nd = of_find_node_by_path("/key");
+    if(imx6uirq.nd == NULL) {
+
+    }
+
+    for(i = 0; i < KEY_NUM; i++) {
+        imx6uirq.irq_keydesc[i].gpio = of_get_named_gpio(imx6uirq.nd, "key-gpio", i);
+        if(imx6uirq.irq_keydesc[i].gpio < 0) {
+
+        }
+    }
+
+    for(i = 0; i < KEY_NUM; i++) {
+        memset(imx6uirq.irq_keydesc[i].name, 0, sizeof(imx6uirq.irq_keydesc[i].name));
+        sprintf(imx6uirq.irq_keydesc[i].name, "KEY%d", i);
+        gpio_requst(imx6uirq.irq_keydesc[i].gpio, imx6uirq.irq_keydesc[i].name);
+        gpio_direction_input(imx6uirq.irq_keydesc[i].gpio);
+        imx6uirq.irq_keydesc[i].irqnum = irq_of_parse_and_map(imx6uirq.nd, i);
+    }
+
+    imx6uirq.irq_keydesc[0].handler = key0_handler;
+    imx6uirq.irq_keydesc[0].value = KEY0VALUE;
+
+    for(i = 0; i < KEY_NUM; i++) {
+        ret |= request_irq(imx6uirq.irq_keydesc[i].irqnum, imx6uirq.irq_keydesc[0].handler, 
+                        IRQF_TRIGGER_FALLING|IRQF_TRIGGER_RISING, imx6uirq.irq_keydesc[i].name, &imx6uirq);
+    }
+
+    init_timer(&imx6uirq.timer);
+    imx6uirq.timer.function = timer_function;
+
+    return 0;
+}
+
 static int imx6uirq_open(struct inode *inode, struct file *filp)
 {
+    filp->private_data = &imx6uirq;
     return 0;
 }
 
 static ssize_t imx6uirq_read(struct file *filp, char __user *buf, size_t cnt, loff_t *offt)
 {
+    int ret =0;
+    unsigned char keyvalue = 0;
+    unsigned char releasekey = 0;
+    struct imx6uirq_dev *dev = (struct imx6uirq_dev *)filp->private_data;
+
+    keyvalue = atomic_read(&dev->keyvalue);
+    releasekey = atomic_read(&dev->releasekey);
+
+    if (releasekey) { /* 有按键按下 */	
+		if (keyvalue & 0x80) {
+			keyvalue &= ~0x80;
+			ret = copy_to_user(buf, &keyvalue, sizeof(keyvalue));
+		} else {
+			goto data_error;
+		}
+		atomic_set(&dev->releasekey, 0);/* 按下标志清零 */
+	} else {
+		goto data_error;
+	}
+	return 0;
+	
+data_error:
+	return -EINVAL;
     return 0;
 }
 
@@ -117,7 +210,17 @@ static int __init imx6uirq_init(void)
 static void __exit imx6uirq_exit(void)
 {
     unsigned int i = 0;
+    del_timer_sync(&imx6uirq.timer);
 
+    for(i = 0; i < KEY_NUM; i++) {
+        free_irq(imx6uirq.irq_keydesc[i].irqnum, &imx6uirq);
+        gpio_free(imx6uirq.irq_keydesc[i].gpio);
+    }
+
+    cdev_del(&imx6uirq.cdev);
+    unregister_chrdev_region(imx6uirq.devid, IMX6UIRQ_CNT);
+    device_destory(imx6uirq.class, imx6uirq.devid);
+    class_destory(imx6uirq.class);
 }
 
 module_init(imx6uirq_init);
