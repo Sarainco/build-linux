@@ -98,6 +98,47 @@ util_linux:
 	&& sudo make install DESTDIR=$(UTIL_LINUX_BUILD)
 
 
+LIBUSB := libusb-master
+LIBUSB_SRC := $(SRC_DIR)/$(LIBUSB)
+LIBUSB_BUILD := $(BUILD_DIR)/$(LIBUSB)
+
+libusb/prepare:
+	unzip $(DL_DIR)/$(LIBUSB)* -d $(SRC_DIR)
+	mkdir -p $(LIBUSB_BUILD)
+
+libusb:
+	cd $(LIBUSB_SRC) \
+	&& ./autogen.sh \
+	&& ./configure \
+		--host=aarch64-none-linux-gnu \
+		--prefix=/usr \
+		--disable-udev \
+		CC=$(CROSS_COMPILE)gcc \
+		CXX=$(CROSS_COMPILE)g++ \
+	&& make \
+	&& make install DESTDIR=$(LIBUSB_BUILD)
+
+CUPS := cups-2.3.3
+CUPS_SRC := $(SRC_DIR)/$(CUPS)
+CUPS_BUILD := $(BUILD_DIR)/$(CUPS)
+
+cups/prepare:
+	tar xf $(DL_DIR)/$(CUPS)* -C $(SRC_DIR) --overwrite
+	mkdir -p $(CUPS_BUILD)
+
+cups:
+	cd $(CUPS_SRC) \
+	&& ./configure \
+	--host=aarch64-none-linux-gnu \
+	--prefix=/usr \
+	CC=$(CROSS_COMPILE)gcc \
+	CXX=$(CROSS_COMPILE)g++ \
+	CPPFLAGS="-I/home/sunao/workspace/build-linux/staging/build/libusb-master/usr/include" \
+	LDFLAGS="-L/home/sunao/workspace/build-linux/staging/build/libusb-master/usr/lib" \
+	&& make \
+	&& make install DESTDIR=$(CUPS_BUILD)
+
+
 NTFS3G := ntfs-3g_ntfsprogs-2022.10.3
 NTFS3G_SRC := $(SRC_DIR)/$(NTFS3G)
 NTFS3G_BUILD := $(BUILD_DIR)/$(NTFS3G)
