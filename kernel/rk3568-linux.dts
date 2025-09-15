@@ -24,7 +24,64 @@
 		key-gpio = <&gpio3 RK_PC5 GPIO_ACTIVE_HIGH>;
 		status = "okay";
 	}
+
+	fan0: pwm-fan {
+		status = "okay";
+		compatible = "pwm-fan";
+		cooling-min-state = <0>;
+		cooling-max-state = <24>;
+		#cooling-cells = <2>;
+		pwms = <&pwm15 0 40000 0>; // 25kHz
+		cooling-levels = <
+			0 10 15 20 25 30 35 40 45 50 55 
+			60 65 70 75 80 85 90 95 100 
+			105 110 115 120 125
+		>;
+	};
 }
+
+&pwm15 {
+	status = "okay";
+};
+
+&i2c2 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c2m0_xfer>;
+
+	tmp100: temperature-sensor@48 {
+		status = "okay";
+		compatible = "ti,tmp100";
+		reg = <0x48>;           /* TMP100 的 I2C 地址 */
+		#thermal-sensor-cells = <1>;
+    };
+};
+
+&thermal_zones {
+	board_thermal {
+		polling-delay-passive = <20>; /* milliseconds */
+		polling-delay = <1000>; /* milliseconds */
+		// policy = "step_wise";
+
+		thermal-sensors = <&tmp100 0>;   // 使用 TMP100 传感器
+
+		trips {
+			tmp100_fan: trip0 {
+				temperature = <40000>; // 45°C 开启风扇
+				hysteresis = <1000>;   // 43°C 关
+				type = "active";
+			};
+		};
+
+		cooling-maps {
+			map0 {
+				trip = <&tmp100_fan>;
+				cooling-device = <&fan0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+			};
+		};
+
+	};
+};
 
 &pinctrl {
 	key-gpios {
