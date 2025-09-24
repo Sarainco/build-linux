@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
-#include "lvgl.h"
 #include <unistd.h>
+#include "sys_env.h"
+#include "sys_tick.h"
 #if 0
 int ffmpeg_test() 
 {
@@ -595,6 +596,17 @@ static void video_timer_cb(lv_timer_t * timer)
         return;
     }
 #endif
+    // 如果需要 seek
+    // if(ctx->need_seek && ctx->pFormatCtx && ctx->videoStreamIndex >= 0) {
+    //     int64_t seek_target = av_rescale_q(ctx->current_pts,
+    //                                        (AVRational){1,1000},
+    //                                        ctx->pFormatCtx->streams[ctx->videoStreamIndex]->time_base);
+    //     av_seek_frame(ctx->pFormatCtx, ctx->videoStreamIndex, seek_target, AVSEEK_FLAG_ANY);
+    //     avcodec_flush_buffers(ctx->pCodecCtx);
+    //     ctx->need_seek = false;
+    // }
+    if(!ctx || ctx->stop || ctx->seeking) return;  // 暂停时不播放
+
     AVPacket packet;
     if(av_read_frame(ctx->pFormatCtx, &packet) >= 0) {
         if(packet.stream_index == ctx->videoStreamIndex) {
@@ -613,14 +625,29 @@ static void video_timer_cb(lv_timer_t * timer)
                 video_canvas_show_frame(ctx->pFrameRGB->data[0],
                                         ctx->pCodecCtx->width,
                                         ctx->pCodecCtx->height);
+
+                // 更新当前播放时间 (ms)
+                if (ctx->pFrame->pts != AV_NOPTS_VALUE) {
+                    AVRational time_base = ctx->pFormatCtx->streams[ctx->videoStreamIndex]->time_base;
+                    ctx->current_pts = av_rescale_q(ctx->pFrame->pts, time_base, (AVRational){1,1000});
+                }
+
+                // 更新进度条
+                if (!ctx->seeking && ctx->slider) {
+                    lv_slider_set_value(ctx->slider, (int32_t)ctx->current_pts, LV_ANIM_OFF);
+                }
             }
         }
         av_packet_unref(&packet);
     } else {
         // 视频播放完
         ctx->stop = true;
-        lv_timer_del(timer);
+        if(timer) lv_timer_del(timer);
         // 删除视频 canvas
+        if (ctx->slider) {
+            lv_obj_del(ctx->slider);
+            ctx->slider = NULL;
+        }
         if(canvas) {
             lv_obj_del(canvas);
             canvas = NULL;
@@ -633,11 +660,73 @@ static void video_timer_cb(lv_timer_t * timer)
         avcodec_close(ctx->pCodecCtx);
         avformat_close_input(&ctx->pFormatCtx);
         free(ctx);
+        free(canvas_buf);
         printf("video_timer_cb stop.....");
     }
 }
 
-void lv_example_open_video(const char * full_path)
+static void slider_event_cb(lv_event_t * e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t * slider = lv_event_get_target(e);
+    video_context_t * ctx = lv_event_get_user_data(e);
+
+    if(!ctx || !slider) return;
+
+    if(code == LV_EVENT_PRESSED) {
+        ctx->seeking = true;  // 开始拖动
+    } 
+    else if(code == LV_EVENT_VALUE_CHANGED && ctx->seeking) {
+        // 拖动时实时显示帧
+        ctx->current_pts = lv_slider_get_value(slider);
+
+        if(ctx->pFormatCtx && ctx->videoStreamIndex >= 0) {
+            int64_t seek_target = av_rescale_q(ctx->current_pts,
+                                               (AVRational){1,1000},
+                                               ctx->pFormatCtx->streams[ctx->videoStreamIndex]->time_base);
+
+            av_seek_frame(ctx->pFormatCtx, ctx->videoStreamIndex, seek_target, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
+            avcodec_flush_buffers(ctx->pCodecCtx);
+
+            // 解码一帧显示
+            AVPacket packet;
+            while(av_read_frame(ctx->pFormatCtx, &packet) >= 0) {
+                if(packet.stream_index == ctx->videoStreamIndex) {
+                    int frameFinished = 0;
+                    avcodec_decode_video2(ctx->pCodecCtx, ctx->pFrame, &frameFinished, &packet);
+                    if(frameFinished) {
+                        sws_scale(ctx->sws_ctx,
+                                  (uint8_t const * const *)ctx->pFrame->data,
+                                  ctx->pFrame->linesize,
+                                  0,
+                                  ctx->pCodecCtx->height,
+                                  ctx->pFrameRGB->data,
+                                  ctx->pFrameRGB->linesize);
+
+                        video_canvas_show_frame(ctx->pFrameRGB->data[0],
+                                                ctx->pCodecCtx->width,
+                                                ctx->pCodecCtx->height);
+                        ctx->current_pts = av_rescale_q(ctx->pFrame->pts,
+                                                       ctx->pFormatCtx->streams[ctx->videoStreamIndex]->time_base,
+                                                       (AVRational){1,1000});
+                        lv_slider_set_value(ctx->slider, (int32_t)ctx->current_pts, LV_ANIM_OFF);
+                        av_packet_unref(&packet);
+                        break; // 只显示一帧
+                    }
+                }
+                av_packet_unref(&packet);
+            }
+        }
+    } 
+    else if(code == LV_EVENT_RELEASED) {
+        // 拖动结束，继续 timer 播放
+        ctx->seeking = false;
+        ctx->current_pts = lv_slider_get_value(slider);
+    }
+}
+
+
+void lv_example_open_video(lv_obj_t * parent, const char * full_path)
 {
     if(!full_path) return;
 
@@ -687,10 +776,52 @@ void lv_example_open_video(const char * full_path)
                                   SWS_BILINEAR,
                                   NULL, NULL, NULL);
 
+    // 获取总时长 (ms)
+    if(ctx->pFormatCtx->duration != AV_NOPTS_VALUE) {
+        ctx->duration = (ctx->pFormatCtx->duration / AV_TIME_BASE) * 1000;
+    } else {
+        ctx->duration = 0;
+    }
+
+    if(!parent) parent = lv_scr_act(); // 默认屏幕
     // 创建视频 canvas
-    video_canvas_init(lv_scr_act(), ctx->pCodecCtx->width, ctx->pCodecCtx->height);
+    video_canvas_init(parent, ctx->pCodecCtx->width, ctx->pCodecCtx->height);
     lv_obj_move_foreground(canvas);
 
+    // 创建进度条 slider
+    ctx->slider = lv_slider_create(parent);
+    lv_slider_set_range(ctx->slider, 0, ctx->duration > 0 ? ctx->duration : 100); // 避免0
+    lv_slider_set_value(ctx->slider, 0, LV_ANIM_OFF);
+    lv_obj_set_width(ctx->slider, ctx->pCodecCtx->width);
+    lv_obj_align_to(ctx->slider, canvas, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+    lv_obj_add_event_cb(ctx->slider, slider_event_cb, LV_EVENT_PRESSED, ctx);
+    lv_obj_add_event_cb(ctx->slider, slider_event_cb, LV_EVENT_VALUE_CHANGED, ctx);
+    lv_obj_add_event_cb(ctx->slider, slider_event_cb, LV_EVENT_RELEASED, ctx);
+
     // 创建定时器逐帧播放
-    lv_timer_create(video_timer_cb, 40, ctx); // 25fps
+    lv_timer_create(video_timer_cb, 100, ctx); // 25fps
+
 }
+
+void GenerateMediaPath(char* folder, size_t folderSize,
+                              char* videoPath, size_t videoSize,
+                              int index)
+{
+    DateTimeStruct curDateTime = GetCurDateTime();
+
+    // 目录: /userdata/ums/video/20250809
+    snprintf(folder, folderSize, "/userdata/ums/video/%d%02d%02d",
+             curDateTime.tm_year, curDateTime.tm_mon, curDateTime.tm_mday);
+    CheckToCreateDir(folder);
+
+    // 文件名前缀: 20170809_070141
+    char prefix[64];
+    snprintf(prefix, sizeof(prefix), "%d%02d%02d_%02d%02d%02d",
+             curDateTime.tm_year, curDateTime.tm_mon, curDateTime.tm_mday,
+             curDateTime.tm_hour, curDateTime.tm_min, curDateTime.tm_sec);
+
+    // 视频路径: .../20170809_070141_001.mp4
+    snprintf(videoPath, videoSize, "%s/%s_%03d.mp4", folder, prefix, index);
+
+}
+

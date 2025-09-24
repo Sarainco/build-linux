@@ -4,6 +4,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "lvgl.h"
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
 #include <libavutil/imgutils.h>
@@ -95,6 +96,19 @@ typedef struct {
     uint8_t         *buffer;
     int              videoStreamIndex;
     bool             stop;
+
+    // 播放控制
+    int64_t          duration;     // 视频总时长 (ms)
+    int64_t          current_pts;  // 当前播放时间 (ms)
+
+    // LVGL 相关控件
+    //lv_obj_t        *canvas;       // 播放显示的画布
+    lv_obj_t        *slider;       // 播放进度条
+
+    // 状态
+    bool             seeking;      // 是否在拖动进度条
+    lv_timer_t      *timer;        // 新增：保存视频定时器
+    bool             need_seek;    // 是否需要 seek
 } video_context_t;
 
 
@@ -104,5 +118,7 @@ int mp4_writer_realtime_close(MP4WriterRealtime *w);
 int ffmpeg_test();
 int ffmpeg_mjpeg_mp4_test();
 //int ffmpeg_play_video_test(const char *play_path);
-
+void GenerateMediaPath(char* folder, size_t folderSize,
+                              char* videoPath, size_t videoSize,
+                              int index);
 #endif

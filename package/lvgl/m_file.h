@@ -2,7 +2,7 @@
 #define __M_LV_FILEPICKER_H__
 
 #include "lvgl.h"
-
+#include "widget/widget_base.h"
 /**
  * @brief 创建文件选择器
  * @param parent 父对象
@@ -12,5 +12,7 @@
  */
 // lv_obj_t * m_lv_filepicker_create(lv_obj_t * parent, const char * path, lv_event_cb_t cb);
 lv_obj_t * file_browser_create(lv_obj_t * parent, const char * start_path);
-
+void lv_fs_posix_register(void);
+//WidgetBaseStruct* UI_CreateFileBrowserView(lv_obj_t* parent, const uint32_t id);
+void test_show_dir(const char * dir_path);
 #endif /* M_LV_FILEPICKER_H */
