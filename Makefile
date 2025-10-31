@@ -139,6 +139,142 @@ cups:
 	&& make install DESTDIR=$(CUPS_BUILD)
 
 
+# python-dev
+PYTHON := Python-2.7.18
+PYTHON_SRC := $(SRC_DIR)/$(PYTHON)
+PYTHON_BUILD := $(BUILD_DIR)/$(PYTHON)
+
+python/prepare:
+	mkdir -p $(PYTHON_BUILD)
+
+python: python/prepare
+	cd $(PYTHON_SRC) && \
+	./configure \
+		ac_cv_file__dev_ptmx=no \
+		ac_cv_file__dev_ptc=no \
+		--host=arm-linux-gnueabihf \
+		--build=x86_64-linux-gnu \
+		--prefix=/usr \
+		--enable-shared \
+		--with-ensurepip=install \
+		--enable-optimizations \
+		--with-system-ffi \
+		--with-lto \
+		--with-computed-gotos \
+		--disable-test-modules \
+		--disable-ipv6 \
+		--with-ensurepip=no \
+		CC="$(CROSS_COMPILE)gcc --sysroot=$(TOOLCHAIN_SYSROOT_DIR)" \
+		AR="$(CROSS_COMPILE)ar" \
+		LD="$(CROSS_COMPILE)ld" \
+	&& make \
+	&& make install DESTDIR=$(PYTHON_BUILD)
+
+
+ZLIB := zlib-master
+ZLIB_SRC := $(SRC_DIR)/$(ZLIB)
+ZLIB_BUILD := $(BUILD_DIR)/$(ZLIB)
+
+zlib/prepare:
+	mkdir -p $(ZLIB_BUILD)
+
+zlib:
+	cd $(ZLIB_SRC) && \
+	CC="$(CROSS_COMPILE)gcc" ./configure --prefix=/usr \
+	&& make \
+	&& make install DESTDIR=$(ZLIB_BUILD)
+
+
+HPLIP_SRC = /home/ss/moc200/staging/source/hplip-3.25.6
+HPLIP_BUILD = /home/ss/moc200/staging/build/hplip
+
+hplip/prepare:
+	mkdir -p $(HPLIP_BUILD)
+
+hplip: hplip/prepare
+	cd $(HPLIP_SRC) && \
+	./configure \
+		--host=arm-linux-gnueabihf \
+		--build=x86_64-linux-gnu \
+		--prefix=/usr \
+		--disable-imageProcessor-build \
+		--enable-hpcups-only-build \
+		--enable-class-driver \
+		--enable-new-hpcups=no \
+		--enable-network-build=no \
+		--enable-scan-build=no \
+		--enable-gui-build=no \
+		--enable-fax-build=no \
+		--enable-dbus-build=no \
+		--enable-qt4=no \
+		--enable-qt5=no \
+	CC="$(CROSS_COMPILE)gcc --sysroot=$(TOOLCHAIN_SYSROOT_DIR)" \
+	CXX="$(CROSS_COMPILE)g++ --sysroot=$(TOOLCHAIN_SYSROOT_DIR)" \
+	CPPFLAGS="-I$(BUILD_DIR)/libusb-master/usr/include -I$(BUILD_DIR)/cups-2.3.3/usr/include -I$(BUILD_DIR)/jpeg-9f/usr/include -I$(BUILD_DIR)/zlib-master/usr/include" \
+	LDFLAGS="-L$(BUILD_DIR)/libusb-master/usr/lib -L$(BUILD_DIR)/cups-2.3.3/usr/lib64 -L$(BUILD_DIR)/jpeg-9f/usr/lib -L$(BUILD_DIR)/zlib-master/usr/lib" \
+	CUPS_CONFIG=$(BUILD_DIR)/cups-2.3.3/usr/bin/cups-config \
+	&& make \
+	&& make install DESTDIR=$(HPLIP_BUILD)
+
+
+hplip/clean-src:
+	rm -rf $(HPLIP_BUILD)
+
+
+STRACE := strace-6.17
+STRACE_SRC := $(SRC_DIR)/$(STRACE)
+STRACE_BUILD := $(BUILD_DIR)/$(STRACE)
+
+strace/prepare:
+	mkdir -p $(STRACE_BUILD)
+
+strace: strace/prepare
+	cd $(STRACE_SRC) && \
+	./configure \
+		--host=arm-linux-gnueabihf \
+		--prefix=/usr \
+	CC="$(CROSS_COMPILE)gcc --sysroot=$(TOOLCHAIN_SYSROOT_DIR)" \
+	&& make \
+	&& make install DESTDIR=$(STRACE_BUILD)
+
+
+GHOSTPDL := ghostpdl-9.26
+GHOSTPDL_SRC := $(SRC_DIR)/$(GHOSTPDL)
+GHOSTPDL_BUILD := $(BUILD_DIR)/$(GHOSTPDL)
+
+ghostpdl/prepare:
+	mkdir -p $(GHOSTPDL_BUILD)
+
+ghostpdl: ghostpdl/prepare
+	cd $(GHOSTPDL_SRC) && \
+	./configure \
+		--build=x86_64-linux-gnu \
+		--host=arm-linux-gnueabihf \
+		--target=arm-linux-gnueabihf \
+		--prefix=/usr \
+		--disable-fontconfig \
+		--with-fontpath=/usr/share/fonts \
+		--enable-freetype \
+		--disable-gtk \
+		--without-libpaper \
+		--without-jbig2dec \
+		--without-libidn \
+		--disable-openjpeg \
+		--enable-cups \
+	CC="$(CROSS_COMPILE)gcc" \
+	CXX="$(CROSS_COMPILE)g++" \
+	AR="$(CROSS_COMPILE)ar" \
+	LD="$(CROSS_COMPILE)ld" \
+	RANLIB="$(CROSS_COMPILE)ranlib" \
+	STRIP="$(CROSS_COMPILE)strip" \
+	CFLAGS="--sysroot=$(TOOLCHAIN_SYSROOT_DIR)" \
+	LDFLAGS="--sysroot=$(TOOLCHAIN_SYSROOT_DIR)" \
+	&& make \
+	&& make install DESTDIR=$(GHOSTPDL_BUILD)
+
+ghostpdl/clean:
+	cd $(GHOSTPDL_SRC) && make clean
+
 NTFS3G := ntfs-3g_ntfsprogs-2022.10.3
 NTFS3G_SRC := $(SRC_DIR)/$(NTFS3G)
 NTFS3G_BUILD := $(BUILD_DIR)/$(NTFS3G)
