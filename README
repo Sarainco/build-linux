@@ -1,0 +1,46 @@
+##### 基于ubuntu base构建根文件系统
+
+##### 安装依赖
+
+```bash
+sudo apt update
+sudo apt install qemu-user-static debootstrap #安装容器，构建不同架构的ubuntu根文件系统
+sudo qemu-debootstrap --arch=armhf focal ./rootfs http://ports.ubuntu.com/ # 跨架构 rootfs 构建
+sudo cp /usr/bin/qemu-arm-static ./rootfs/usr/bin/ # 确保 chroot 环境内能执行ARM 程序
+```
+
+##### 切换根路径，进入ARM世界
+
+```bash
+sudo chroot ./rootfs /bin/bash #执行该命令后，等同于在arm架构上动作
+```
+
+##### 安装cups服务以及hp打印机相关驱动
+
+```bash
+# 依赖apt强大的包管理功能，可以省去很多编译安装遇到的问题
+apt install -y cups hplip printer-driver-hpcups lsof
+```
+
+##### 移植第三方包到该文件系统
+
+```bash
+# 将业务程序所需要的依赖拷贝至相关路径
+```
+
+##### 系统服务
+
+```bash
+# 启动方式迁移（busybox init ---> systemd）;主要是业务程序自启动方式的修改
+# 说明：
+```
+
+##### 其它修改
+
+
+##### 打包文件系统
+
+```bash
+sudo tar -cjpf rootfs.tar.bz2 -C rootfs .
+```
+
