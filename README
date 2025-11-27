@@ -1,4 +1,6 @@
-##### 基于ubuntu base构建根文件系统
+##### 开发环境
+
+* ubuntu20.04
 
 ##### 安装依赖
 
@@ -28,19 +30,8 @@ apt install -y cups hplip printer-driver-hpcups lsof
 # 将业务程序所需要的依赖拷贝至相关路径
 ```
 
-##### 系统服务
-
-```bash
-# 启动方式迁移（busybox init ---> systemd）;主要是业务程序自启动方式的修改
-# 说明：
-```
-
-##### 其它修改
-
-
 ##### 打包文件系统
 
 ```bash
 sudo tar -cjpf rootfs.tar.bz2 -C rootfs .
 ```
-
