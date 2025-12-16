@@ -6,30 +6,37 @@ DL_DIR := $(TOPDIR)/../rk3568_dl
 ROOTFS := $(TOPDIR)/staging/rootfs
 IMAGE := $(TOPDIR)/staging/image
 
+BUILD_TYPE=ARM
+ifeq ($(BUILD_TYPE),ARM)
+ARCH := arm
+CROSS_COMPILE := $(HOME)/workspace/toolchain/arm-gnu-toolchain-13.2.Rel1-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-
+endif
+ifeq ($(BUILD_TYPE),ARM64)
 ARCH := arm64
 CROSS_COMPILE := $(HOME)/toolchain/toolchain-rk3568/bin/aarch64-buildroot-linux-gnu-
 #CROSS_COMPILE := $(HOME)/toolchain/toolchain-rk3562/bin/aarch64-none-linux-gnu-
+endif
 
 IMAGE_FILE_ROOTFS := rootfs.ext4
 IMAGE_SIZE_ROOTFS := 800M
 
 all: busybox;
 
-KERNEL := linux-5.10.239
+KERNEL := linux-6.18.1
 KERNEL_SRC := $(SRC_DIR)/$(KERNEL)
 KERNEL_BUILD := $(BUILD_DIR)/$(KERNEL)
-KERNEL_ENV := ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) $(MAKE) -C $(KERNEL_SRC)
+KERNEL_ENV := ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) $(MAKE) -C $(KERNEL_SRC) O=$(KERNEL_BUILD)
 
 kernel/prepare:
-	mkdir -p $(SRC_DIR) && mkdir -p $(KERNEL_BUILD)
-	tar xf $(DL_DIR)/$(KERNEL)* -C $(SRC_DIR) --overwrite
+# 	mkdir -p $(SRC_DIR) && mkdir -p $(KERNEL_BUILD)
+# 	tar xf $(DL_DIR)/$(KERNEL)* -C $(SRC_DIR) --overwrite
+	$(KERNEL_ENV) imx_v6_v7_defconfig
 
 kernel/menuconfig:
-	$(KERNEL_ENV) defconfig
 	$(KERNEL_ENV) menuconfig
 
 kernel/compile:
-	$(KERNEL_ENV) all -j$(nproc)
+	+$(KERNEL_ENV) all
 
 kernel/clean:
 	$(KERNEL_ENV) distclean
