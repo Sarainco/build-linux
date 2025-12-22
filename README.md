@@ -23,10 +23,6 @@
 - **rockchip-linux-build**
    面向 **RK3568** 平台的独立构建包，采用 Rockchip 官方 SDK 体系，包含：
 
-  - U-Boot：`2017.09`
-  - Linux Kernel：`4.19`
-  - Buildroot：`2018.02`
-
   ```bash
   .
   ├── buildroot
