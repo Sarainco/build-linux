@@ -6,7 +6,7 @@ MINOR_VERSION := 1
 
 TOP := $(CURDIR)
 
-all: host
+all: host package
 
 include common.mk
 

@@ -1,0 +1,8 @@
+menu "package Build"
+
+menuconfig PACKAGE_BUSYBOX
+	bool "busybox"
+	default y
+
+endmenu
+

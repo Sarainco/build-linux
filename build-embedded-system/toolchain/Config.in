@@ -1,0 +1,26 @@
+
+menu "Toolchain options"
+
+config TOOLCHAIN
+	bool "Toolchain support"
+	default y if !X86
+
+if TOOLCHAIN
+
+config TOOLCHAIN_DIR
+	string "toolchain dir"
+	default "~/workspace/toolchain"
+
+config TOOLCHAIN_NAME
+	string "toolchain name"
+	help
+		define toolchain dir $TOOLCHAIN_DIR/$CONFIG_TOOLCHAIN_NAME
+
+config TOOLCHAIN_TARGET
+	string "toolchain target"
+	help
+		toolchain target e.g. arm-linux-gnueabihf
+
+endif
+
+endmenu

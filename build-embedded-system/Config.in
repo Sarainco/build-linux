@@ -1,0 +1,33 @@
+mainmenu "Build System Configuration"
+
+menu "Generic options"
+
+config ARCH
+	string
+	default "arm" if ARM
+	default "arm64" if ARM64
+	default "x86" if X86
+
+choice
+	prompt "ARCH"
+	default ARM
+
+config ARM
+	bool "arm"
+
+config ARM64
+	bool "arm64"
+
+config X86
+	bool "x86"
+
+endchoice
+
+config DL_DIR
+	string "dl directory"
+	default "~/dl"
+
+endmenu
+
+source toolchain/Config.in
+source package/Config.in

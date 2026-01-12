@@ -17,13 +17,28 @@ TOOLCHAIN := $(TOP)/toolchain
 TARGET := $(TOP)/target
 MODEL_DIR := $(TARGET)/$(MODEL)
 MODEL_CONFIG := $(MODEL_DIR)/model.config
+SOURCE := $(STAGING_DIR)/source
 OUTPUT := $(STAGING_DIR)/$(MODEL)
 HOST_OUTPUT := $(STAGING_DIR)/host
+ROOTFS := $(OUTPUT)/rootfs
+PACKAGE := $(TOP)/package
 
 ifeq ($(wildcard $(MODEL_CONFIG)),)
 $(error "Invalid model, usage: make M=<model>")
 endif
 
+# CONFIG_XXX
+include $(MODEL_CONFIG)
+
+# strip the " in path config
+QUOTE="
+#"
+
+CONFIG_TOOLCHAIN_DIR:=$(subst $(QUOTE),,$(CONFIG_TOOLCHAIN_DIR))
+CONFIG_TOOLCHAIN_NAME:=$(subst $(QUOTE),,$(CONFIG_TOOLCHAIN_NAME))
+CONFIG_TOOLCHAIN_TARGET:=$(subst $(QUOTE),,$(CONFIG_TOOLCHAIN_TARGET))
 
 
 include $(HOST)/sub.mk
+include $(TOOLCHAIN)/sub.mk
+include $(PACKAGE)/sub.mk
