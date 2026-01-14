@@ -2,6 +2,7 @@
 
 # 引入所有包的 mk
 include $(PACKAGE)/busybox/sub.mk
+include $(PACKAGE)/util-linux/sub.mk
 # 以后可以自动化
 # include $(wildcard $(PACKAGE)/*/*.mk)
 

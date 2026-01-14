@@ -37,6 +37,35 @@ QUOTE="
 CONFIG_TOOLCHAIN_DIR:=$(subst $(QUOTE),,$(CONFIG_TOOLCHAIN_DIR))
 CONFIG_TOOLCHAIN_NAME:=$(subst $(QUOTE),,$(CONFIG_TOOLCHAIN_NAME))
 CONFIG_TOOLCHAIN_TARGET:=$(subst $(QUOTE),,$(CONFIG_TOOLCHAIN_TARGET))
+CONFIG_ARCH:=$(subst $(QUOTE),,$(CONFIG_ARCH))
+CONFIG_DL_DIR:=$(subst $(QUOTE),,$(CONFIG_DL_DIR))
+
+# $(1): patch directory
+# $(2): source directory
+# $(3): stamp file
+define apply_patches
+	@set -e; \
+	if [ -f "$(3)" ]; then \
+		echo ">>> Patches already applied ($(3))"; \
+		exit 0; \
+	fi; \
+	if [ -d "$(1)" ]; then \
+		patches=$$(ls "$(1)"/*.patch 2>/dev/null | sort); \
+		if [ -z "$$patches" ]; then \
+			echo ">>> No patches to apply"; \
+		else \
+			echo ">>> Applying patches from $(1)"; \
+			for p in $$patches; do \
+				echo "    -> $$p"; \
+				patch -d "$(2)" -p1 < "$$p"; \
+			done; \
+		fi; \
+	else \
+		echo ">>> Patch dir $(1) not found, skip"; \
+	fi; \
+	touch "$(3)"
+endef
+
 
 
 include $(HOST)/sub.mk

@@ -4,5 +4,9 @@ menuconfig PACKAGE_BUSYBOX
 	bool "busybox"
 	default y
 
+menuconfig PACKAGE_UTIL_LINUX
+	bool "util-linux"
+	default y
+
 endmenu
 

@@ -9,7 +9,7 @@ TOOLCHAIN_BIN_DIR    := $(TOOLCHAIN_DIR)/bin
 TOOLCHAIN_SYSROOT    := $(TOOLCHAIN_DIR)/$(CONFIG_TOOLCHAIN_TARGET)/sysroot
 
 CROSS_COMPILE ?= $(TOOLCHAIN_BIN_DIR)/$(CONFIG_TOOLCHAIN_TARGET)-
-
+ARCH ?= $(CONFIG_ARCH)
 endif
 
 # -------------------------------------------------
