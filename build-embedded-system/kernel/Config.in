@@ -1,0 +1,30 @@
+menu "Kernel options"
+
+config KERNEL
+	bool "Kernel support"
+	default y if !X86
+
+if KERNEL
+
+config KERNEL_VER
+	string
+	default "5.10" if KERNEL_5_10
+
+choice
+	prompt "kernel version"
+
+
+config KERNEL_ROCKCHIP_5_10
+	bool "kernel-rockchip-5.10"
+
+config KERNEL_KICKPI_5_10
+	bool "kernel-kickpi-5.10"
+
+
+endchoice
+
+
+endif
+
+endmenu
+
