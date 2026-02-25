@@ -17,8 +17,21 @@
 
 ### 各目录功能说明
 
-- **build-linux**
-   统一的系统构建环境，当前同时支持 **imx6ull、rk3562、rk3568** 三款芯片的平台构建。
+- **build-embedded-system**
+   嵌入式linux系统构建2.0版本；后续内容将在版本中新增，1.0版本的内容也会移植到该版本包中；单独成库，包含：
+   ```bash
+   .
+   ├── bootloader
+   ├── common.mk
+   ├── Config.in
+   ├── host
+   ├── kernel
+   ├── Makefile
+   ├── package
+   ├── staging
+   ├── target
+   └── toolchain
+   ```
 
 - **rockchip-linux-build**
    面向 **RK3568** 平台的独立构建包，采用 Rockchip 官方 SDK 体系，包含：
